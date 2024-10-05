@@ -2,6 +2,7 @@ import { relations, sql } from "drizzle-orm";
 import {
   index,
   int,
+  integer,
   primaryKey,
   sqliteTableCreator,
   text,
@@ -112,5 +113,48 @@ export const verificationTokens = createTable(
   },
   (vt) => ({
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
+  }));
+
+export const cats = createTable("cat", {
+  id: int("id", {mode: "number"}).primaryKey({autoIncrement: true}),
+  name: text("name").notNull(),
+  tag: text("tag", {length: 15}).notNull().unique(),
+  color: text("color", {length: 15}),
+  sex: integer("sex", {mode: "boolean"}),
+  researcherId: int("researcherId")
+    .references(() => researchers.id),
+});
+
+export const catRelations = relations(cats, ({ many, one }) => ({
+  notes: many(notes),
+  researcher: one(cats, {
+    fields: [cats.researcherId],
+    references: [researchers.id],
   })
-);
+}));
+
+export const notes = createTable("notes", {
+  id: int("id", {mode: "number"}).primaryKey({autoIncrement: true}),
+  catId: int("catId").references(() => cats.id),
+  researcherId: int("researcherId").references(() => researchers.id),
+  text: text("text", {length:1000}).notNull(),
+  timestamp: integer("timestamp", { mode: 'timestamp' })
+    .notNull()
+    .default(sql`(unixepoch())`),
+});
+
+export const notesRelations = relations(notes, ({ one }) => ({
+  cat: one(cats, {
+    fields: [notes.catId],
+    references: [cats.id],
+  })
+}));
+
+export const researchers = createTable("notes", {
+  id: int("id", {mode: "number"}).primaryKey({autoIncrement: true}),
+  name: text("text", {length: 100}).notNull(),
+});
+
+export const researcherRelations = relations(researchers, ({many}) => ({
+  cats: many(cats),
+}));
