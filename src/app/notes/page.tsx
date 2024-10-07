@@ -5,12 +5,11 @@ import { Button, Group, Modal, ScrollArea } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
-import type { ICat, IResearcher } from "~/types";
-import CatTable from "../components/cat/CatTable";
-import AddCatForm from "../components/cat/AddCatForm";
-import EditCatForm from "../components/cat/EditCatForm";
+import { INotes } from "~/types";
+import AddNoteForm from "../components/notes/AddNoteForm";
+import NotesTable from "../components/notes/NotesTable";
 
-const CatsPage = () => {
+const NotesPage = () => {
 
   const [openedAddModal, { open: openCreateModal, close: closeAddModal }] = useDisclosure(false);
   const [openedEditModal, { open: openEditModal, close: closeEditModal }] = useDisclosure(false);
@@ -18,20 +17,12 @@ const CatsPage = () => {
 
   //Pull all items and list them
   const { isPending, data } = useQuery({
-    queryKey: ["cats"],
+    queryKey: ["notes"],
     queryFn: async () => {
-      const response = await fetch("/api/cats");
-      return (await response.json()) as ICat[];
+      const response = await fetch("/api/notes");
+      return (await response.json()) as INotes[];
     },
   });
-
-  const { data:researcherData } = useQuery({
-    queryKey: ["researchers"],
-    queryFn: async () => {
-        const response = await fetch("/api/researchers");
-        return (await response.json()) as IResearcher[];
-    },
-});
 
   const handleRowSelection = (manualEntryId: number) => {
     if (selectedRecord !== manualEntryId) {
@@ -41,17 +32,13 @@ const CatsPage = () => {
     }
   };
 
-  const editRecord = () => {
-    openEditModal();
-  };
-
-  const createRecord = () => {
-    openCreateModal();
+  const editManualEntry = () => {
+    // openEditModal();
   };
 
   const deleteSelectedRecord = () => {
     const id = selectedRecord;
-    fetch("/api/manual", {
+    fetch("/api/notes", {
       method: "DELETE",
       body: JSON.stringify({ id }),
     })
@@ -71,6 +58,10 @@ const CatsPage = () => {
     });
   };
 
+  const editRecord = () => {
+    openCreateModal();
+  };
+
   if (isPending) {
     return <span>Loading...</span>;
   }
@@ -85,10 +76,10 @@ const CatsPage = () => {
         tt="capitalize"
         title="Create A Manual Entry"
       >
-        <AddCatForm />
+        <AddNoteForm />
       </Modal>
       
-      <Modal
+      {/* <Modal
         opened={openedEditModal}
         onClose={closeEditModal}
         centered
@@ -96,17 +87,20 @@ const CatsPage = () => {
         tt="capitalize"
         title="Create A Manual Entry"
       >
-        <EditCatForm selectedCat={data?.find(cat => { return cat.id === selectedRecord})} researchers={researcherData ?? []} />
-      </Modal>
+        <EditManualForm
+          entry={manual?.entries.find((entry) => {
+            return entry.id === selection;
+          })}
+        />
+      </Modal> */ }
 
       <ScrollArea className="h-[80vh]">
-        <CatTable data={data ?? []} selectedRecord={selectedRecord} recordSelected={handleRowSelection}/>
+        <NotesTable data={data ?? []} selectedRecord={selectedRecord} recordSelected={handleRowSelection}/>
       </ScrollArea>
 
       <Group justify="flex-end">
-        {!selectedRecord && <Button onClick={() => createRecord()}>Create</Button>}
-
-        {selectedRecord && <Button onClick={() => editRecord()}>Edit</Button>}
+        <Button onClick={() => editRecord()}>Create</Button>
+        {selectedRecord && <Button onClick={() => editManualEntry()}>Edit</Button>}
         {selectedRecord && (
           <Button color="red" onClick={() => deleteSelectedRecord()}>
             Delete
@@ -117,4 +111,4 @@ const CatsPage = () => {
   )
 }
 
-export default CatsPage;
+export default NotesPage;

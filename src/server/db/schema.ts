@@ -17,26 +17,26 @@ import { type AdapterAccount } from "next-auth/adapters";
  */
 export const createTable = sqliteTableCreator((name) => `stg-cypress-project_${name}`);
 
-export const posts = createTable(
-  "post",
-  {
-    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-    name: text("name", { length: 256 }),
-    createdById: text("created_by", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    createdAt: int("created_at", { mode: "timestamp" })
-      .default(sql`(unixepoch())`)
-      .notNull(),
-    updatedAt: int("updatedAt", { mode: "timestamp" }).$onUpdate(
-      () => new Date()
-    ),
-  },
-  (example) => ({
-    createdByIdIdx: index("created_by_idx").on(example.createdById),
-    nameIndex: index("name_idx").on(example.name),
-  })
-);
+// export const posts = createTable(
+//   "post",
+//   {
+//     id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+//     name: text("name", { length: 256 }),
+//     createdById: text("created_by", { length: 255 })
+//       .notNull()
+//       .references(() => users.id),
+//     createdAt: int("created_at", { mode: "timestamp" })
+//       .default(sql`(unixepoch())`)
+//       .notNull(),
+//     updatedAt: int("updatedAt", { mode: "timestamp" }).$onUpdate(
+//       () => new Date()
+//     ),
+//   },
+//   (example) => ({
+//     createdByIdIdx: index("created_by_idx").on(example.createdById),
+//     nameIndex: index("name_idx").on(example.name),
+//   })
+// );
 
 export const users = createTable("user", {
   id: text("id", { length: 255 })
@@ -127,20 +127,20 @@ export const cats = createTable("cat", {
 
 export const catRelations = relations(cats, ({ many, one }) => ({
   notes: many(notes),
-  researcher: one(cats, {
-    fields: [cats.researcherId],
-    references: [researchers.id],
-  })
+  // researcher: one(cats, {
+  //   fields: [cats.researcherId],
+  //   references: [researchers.id],
+  // })
 }));
 
 export const notes = createTable("notes", {
   id: int("id", {mode: "number"}).primaryKey({autoIncrement: true}),
-  catId: int("catId").references(() => cats.id),
-  researcherId: int("researcherId").references(() => researchers.id),
   text: text("text", {length:1000}).notNull(),
   timestamp: integer("timestamp", { mode: 'timestamp' })
     .notNull()
     .default(sql`(unixepoch())`),
+  catId: int("catId").references(() => cats.id),
+  researcherId: int("researcherId").references(() => researchers.id),
 });
 
 export const notesRelations = relations(notes, ({ one }) => ({
@@ -150,11 +150,11 @@ export const notesRelations = relations(notes, ({ one }) => ({
   })
 }));
 
-export const researchers = createTable("notes", {
+export const researchers = createTable("researchers", {
   id: int("id", {mode: "number"}).primaryKey({autoIncrement: true}),
-  name: text("text", {length: 100}).notNull(),
+  name: text("name", {length: 100}).notNull(),
 });
 
-export const researcherRelations = relations(researchers, ({many}) => ({
-  cats: many(cats),
-}));
+// export const researcherRelations = relations(researchers, ({many}) => ({
+//   cats: many(cats),
+// }));

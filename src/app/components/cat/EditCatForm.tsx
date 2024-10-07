@@ -1,14 +1,19 @@
-import { Button, Group, Radio, TextInput } from "@mantine/core";
+import { Button, Combobox, Group, MultiSelect, Radio, Select, TextInput } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
+import { ICat, IResearcher } from "~/types";
 
-const AddCatForm = () => {
+const EditCatForm = (props: {selectedCat: ICat, researchers: IResearcher[]}) => {
+
+   const {selectedCat, researchers} = props;
+
   const form = useForm({
     initialValues: {
-      name: "",
-      tag: "",
-      color: "",
-      sex: "",
+      name: selectedCat.name,
+      tag: selectedCat.tag,
+      color: selectedCat.color,
+      sex: selectedCat.sex,
+      researcherId: null,
     },
     validate: {
       name: isNotEmpty("Name is required"),
@@ -19,8 +24,9 @@ const AddCatForm = () => {
   });
 
   const handleSubmit = (values: typeof form.values) => {
-    fetch("/api/cats", {
-      method: "POST",
+    console.log("vals", values);
+    fetch(`/api/cats/${selectedCat.id}`, {
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
@@ -29,15 +35,15 @@ const AddCatForm = () => {
     .then(async () => {
       notifications.show({
         color: "green",
-        title: "Save Successful",
-        message: `Saved A New Entry`,
+        title: "Edit Successful",
+        message: `Edit cat ${selectedCat.tag}`,
       });
     })
     .catch(async () => {
       notifications.show({
         color: "red",
         title: "Save Failed",
-        message: "Could not save the manual entry",
+        message: "Could not edit",
       });
     });
   };
@@ -81,9 +87,18 @@ const AddCatForm = () => {
         </Group>
       </Radio.Group>
 
+    <Select 
+        label="Assign a researcher"
+        data={researchers.map(r => {
+            return {value:r.id.toString(), label:r.name};
+        })}
+        key={form.key("researcherId")}
+        {...form.getInputProps("researcherId")}
+    />
+
       <Button mt="md" type="submit">Save</Button>
     </form>
   );
 };
 
-export default AddCatForm;
+export default EditCatForm;

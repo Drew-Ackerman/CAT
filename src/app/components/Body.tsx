@@ -2,13 +2,14 @@
 
 import { AppShell } from "@mantine/core";
 import Navbar from "./nav/Navbar";
-import { IconCat, IconDashboard, IconUserSearch } from "@tabler/icons-react";
+import { IconCat, IconDashboard, IconNote, IconUserSearch } from "@tabler/icons-react";
 import { LinkProps, LinksGroupProps } from "~/types";
 import { useDisclosure } from "@mantine/hooks";
 
 const linkData: (LinkProps | LinksGroupProps)[] = [
     { link: "/", label: "Dashboard", icon: IconDashboard },
     { link: "/cats", label: "Cats", icon: IconCat },
+    { link: "/notes", label: "Notes", icon: IconNote },
     { link: "/researchers", label: "Researchers", icon: IconUserSearch },
 ];
   

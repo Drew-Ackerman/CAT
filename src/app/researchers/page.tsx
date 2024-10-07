@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { IResearcher } from "~/types";
 import ResearcherTable from "../components/researchers/ResearchersTable";
+import AddResearchForm from "../components/researchers/AddResearchForm";
 
 const ResearchersPage = () => {
 
@@ -16,7 +17,7 @@ const ResearchersPage = () => {
 
   //Pull all items and list them
   const { isPending, data } = useQuery({
-    queryKey: ["cats"],
+    queryKey: ["researchers"],
     queryFn: async () => {
       const response = await fetch("/api/researchers");
       return (await response.json()) as IResearcher[];
@@ -37,7 +38,7 @@ const ResearchersPage = () => {
 
   const deleteSelectedRecord = () => {
     const id = selectedRecord;
-    fetch("/api/manual", {
+    fetch("/api/researchers", {
       method: "DELETE",
       body: JSON.stringify({ id }),
     })
@@ -57,7 +58,7 @@ const ResearchersPage = () => {
     });
   };
 
-  const editCat = () => {
+  const editRecord = () => {
     openCreateModal();
   };
 
@@ -75,6 +76,7 @@ const ResearchersPage = () => {
         tt="capitalize"
         title="Create A Manual Entry"
       >
+        <AddResearchForm/>
       </Modal>
       
       {/* <Modal
@@ -97,7 +99,7 @@ const ResearchersPage = () => {
       </ScrollArea>
 
       <Group justify="flex-end">
-        <Button onClick={() => editCat()}>Create</Button>
+        <Button onClick={() => editRecord()}>Create</Button>
         {selectedRecord && <Button onClick={() => editManualEntry()}>Edit</Button>}
         {selectedRecord && (
           <Button color="red" onClick={() => deleteSelectedRecord()}>

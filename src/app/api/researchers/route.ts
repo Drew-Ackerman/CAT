@@ -1,9 +1,9 @@
 import { db } from "~/server/db";
-import { cats, researchers } from "~/server/db/schema";
+import { researchers } from "~/server/db/schema";
 import type { IResearcher } from "~/types";
 
 export async function GET(_request: Request){
-    const data = await db.select().from(cats);
+    const data = await db.select().from(researchers);
     return Response.json(data);
 }
 

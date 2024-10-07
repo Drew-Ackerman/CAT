@@ -10,17 +10,17 @@ interface Props {
 function CatTable({data, selectedRecord, recordSelected}: Props) {
 
     const rows = data?.map((cat: ICat) => {
-    return (
-        <Table.Tr key={cat.id} className={""}>
-        <Table.Td>
-            <Checkbox checked={selectedRecord === cat.id} onChange={() => recordSelected(cat.id)} />
-        </Table.Td>
-        <Table.Td className="capitalize">{cat.name}</Table.Td>
-        <Table.Td className="capitalize">{cat.tag}</Table.Td>
-        <Table.Td className="capitalize">{cat.color}</Table.Td>
-        <Table.Td className="capitalize">{cat.sex ? "Male" : "Female"}</Table.Td>
-        </Table.Tr>
-    );
+        return (
+            <Table.Tr key={cat.id} className={""}>
+                <Table.Td>
+                    <Checkbox checked={selectedRecord === cat.id} onChange={() => recordSelected(cat.id)} />
+                </Table.Td>
+                <Table.Td className="capitalize">{cat.name}</Table.Td>
+                <Table.Td className="capitalize">{cat.tag}</Table.Td>
+                <Table.Td className="capitalize">{cat.color}</Table.Td>
+                <Table.Td className="capitalize">{cat.sex ? "Male" : "Female"}</Table.Td>
+            </Table.Tr>
+        );
     });
 
     return (
