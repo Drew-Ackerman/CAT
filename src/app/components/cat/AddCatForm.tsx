@@ -26,20 +26,20 @@ const AddCatForm = () => {
       },
       body: JSON.stringify(values),
     })
-    .then(async () => {
-      notifications.show({
-        color: "green",
-        title: "Save Successful",
-        message: `Saved A New Entry`,
+      .then(async () => {
+        notifications.show({
+          color: "green",
+          title: "Save Successful",
+          message: `Saved A New Entry`,
+        });
+      })
+      .catch(async () => {
+        notifications.show({
+          color: "red",
+          title: "Save Failed",
+          message: "Could not save the manual entry",
+        });
       });
-    })
-    .catch(async () => {
-      notifications.show({
-        color: "red",
-        title: "Save Failed",
-        message: "Could not save the manual entry",
-      });
-    });
   };
 
   return (
@@ -81,7 +81,9 @@ const AddCatForm = () => {
         </Group>
       </Radio.Group>
 
-      <Button mt="md" type="submit">Save</Button>
+      <Button mt="md" type="submit">
+        Save
+      </Button>
     </form>
   );
 };

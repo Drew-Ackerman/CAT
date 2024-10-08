@@ -1,12 +1,5 @@
 import { relations, sql } from "drizzle-orm";
-import {
-  index,
-  int,
-  integer,
-  primaryKey,
-  sqliteTableCreator,
-  text,
-} from "drizzle-orm/sqlite-core";
+import { index, int, integer, primaryKey, sqliteTableCreator, text } from "drizzle-orm/sqlite-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
 /**
@@ -61,9 +54,7 @@ export const accounts = createTable(
     userId: text("user_id", { length: 255 })
       .notNull()
       .references(() => users.id),
-    type: text("type", { length: 255 })
-      .$type<AdapterAccount["type"]>()
-      .notNull(),
+    type: text("type", { length: 255 }).$type<AdapterAccount["type"]>().notNull(),
     provider: text("provider", { length: 255 }).notNull(),
     providerAccountId: text("provider_account_id", { length: 255 }).notNull(),
     refresh_token: text("refresh_token"),
@@ -79,7 +70,7 @@ export const accounts = createTable(
       columns: [account.provider, account.providerAccountId],
     }),
     userIdIdx: index("account_user_id_idx").on(account.userId),
-  })
+  }),
 );
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
@@ -97,7 +88,7 @@ export const sessions = createTable(
   },
   (session) => ({
     userIdIdx: index("session_userId_idx").on(session.userId),
-  })
+  }),
 );
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -113,30 +104,31 @@ export const verificationTokens = createTable(
   },
   (vt) => ({
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
-  }));
+  }),
+);
 
 export const cats = createTable("cat", {
-  id: int("id", {mode: "number"}).primaryKey({autoIncrement: true}),
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
-  tag: text("tag", {length: 15}).notNull().unique(),
-  color: text("color", {length: 15}),
-  sex: integer("sex", {mode: "boolean"}),
-  researcherId: int("researcherId")
-    .references(() => researchers.id),
+  tag: text("tag", { length: 15 }).notNull().unique(),
+  color: text("color", { length: 15 }),
+  sex: integer("sex", { mode: "boolean" }),
+  researcherId: int("researcherId").references(() => researchers.id),
 });
 
 export const catRelations = relations(cats, ({ many, one }) => ({
   notes: many(notes),
-  // researcher: one(cats, {
-  //   fields: [cats.researcherId],
-  //   references: [researchers.id],
-  // })
+  researcher: one(researchers, {
+    fields: [cats.researcherId],
+    references: [researchers.id],
+    relationName: "researcher",
+  }),
 }));
 
 export const notes = createTable("notes", {
-  id: int("id", {mode: "number"}).primaryKey({autoIncrement: true}),
-  text: text("text", {length:1000}).notNull(),
-  timestamp: integer("timestamp", { mode: 'timestamp' })
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  text: text("text", { length: 1000 }).notNull(),
+  timestamp: integer("timestamp", { mode: "timestamp" })
     .notNull()
     .default(sql`(unixepoch())`),
   catId: int("catId").references(() => cats.id),
@@ -147,14 +139,21 @@ export const notesRelations = relations(notes, ({ one }) => ({
   cat: one(cats, {
     fields: [notes.catId],
     references: [cats.id],
-  })
+    relationName: "cats",
+  }),
+  researcher: one(researchers, {
+    fields: [notes.researcherId],
+    references: [researchers.id],
+    relationName: "notes",
+  }),
 }));
 
 export const researchers = createTable("researchers", {
-  id: int("id", {mode: "number"}).primaryKey({autoIncrement: true}),
-  name: text("name", {length: 100}).notNull(),
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  name: text("name", { length: 100 }).notNull(),
 });
 
-// export const researcherRelations = relations(researchers, ({many}) => ({
-//   cats: many(cats),
-// }));
+export const researcherRelations = relations(researchers, ({ many }) => ({
+  cats: many(cats),
+  notes: many(notes),
+}));

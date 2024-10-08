@@ -11,7 +11,8 @@
     "db:studio": "drizzle-kit studio",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "format": "npx prettier . --write --print-width=120"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.1.0",

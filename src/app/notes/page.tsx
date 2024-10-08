@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useQuery } from "@tanstack/react-query";
 import { Button, Group, Modal, ScrollArea } from "@mantine/core";
@@ -10,7 +10,6 @@ import AddNoteForm from "../components/notes/AddNoteForm";
 import NotesTable from "../components/notes/NotesTable";
 
 const NotesPage = () => {
-
   const [openedAddModal, { open: openCreateModal, close: closeAddModal }] = useDisclosure(false);
   const [openedEditModal, { open: openEditModal, close: closeEditModal }] = useDisclosure(false);
   const [selectedRecord, setSelectedRecord] = useState(0);
@@ -32,34 +31,34 @@ const NotesPage = () => {
     }
   };
 
-  const editManualEntry = () => {
-    // openEditModal();
-  };
-
   const deleteSelectedRecord = () => {
     const id = selectedRecord;
     fetch("/api/notes", {
       method: "DELETE",
       body: JSON.stringify({ id }),
     })
-    .then(async () => {
-      notifications.show({
-        color: "green",
-        title: "Delete Successful",
-        message: `Threat Removed`,
+      .then(async () => {
+        notifications.show({
+          color: "green",
+          title: "Delete Successful",
+          message: `Threat Removed`,
+        });
+      })
+      .catch(async () => {
+        notifications.show({
+          color: "red",
+          title: "Delete Failed",
+          message: "Threat still active",
+        });
       });
-    })
-    .catch(async () => {
-      notifications.show({
-        color: "red",
-        title: "Delete Failed",
-        message: "Threat still active",
-      });
-    });
+  };
+
+  const createRecord = () => {
+    openCreateModal();
   };
 
   const editRecord = () => {
-    openCreateModal();
+    openEditModal();
   };
 
   if (isPending) {
@@ -78,7 +77,7 @@ const NotesPage = () => {
       >
         <AddNoteForm />
       </Modal>
-      
+
       {/* <Modal
         opened={openedEditModal}
         onClose={closeEditModal}
@@ -92,23 +91,23 @@ const NotesPage = () => {
             return entry.id === selection;
           })}
         />
-      </Modal> */ }
+      </Modal> */}
 
       <ScrollArea className="h-[80vh]">
-        <NotesTable data={data ?? []} selectedRecord={selectedRecord} recordSelected={handleRowSelection}/>
+        <NotesTable data={data ?? []} selectedRecord={selectedRecord} recordSelected={handleRowSelection} />
       </ScrollArea>
 
-      <Group justify="flex-end">
-        <Button onClick={() => editRecord()}>Create</Button>
-        {selectedRecord && <Button onClick={() => editManualEntry()}>Edit</Button>}
+      {/* <Group justify="flex-end">
+        {!selectedRecord &&<Button onClick={() => createRecord()}>Create</Button>}
+        {selectedRecord && <Button onClick={() => editRecord()}>Edit</Button>}
         {selectedRecord && (
           <Button color="red" onClick={() => deleteSelectedRecord()}>
             Delete
           </Button>
         )}
-      </Group>
+      </Group> */}
     </>
-  )
-}
+  );
+};
 
 export default NotesPage;

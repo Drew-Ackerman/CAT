@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useQuery } from "@tanstack/react-query";
 import { Button, Group, Modal, ScrollArea } from "@mantine/core";
@@ -11,7 +11,6 @@ import AddCatForm from "../components/cat/AddCatForm";
 import EditCatForm from "../components/cat/EditCatForm";
 
 const CatsPage = () => {
-
   const [openedAddModal, { open: openCreateModal, close: closeAddModal }] = useDisclosure(false);
   const [openedEditModal, { open: openEditModal, close: closeEditModal }] = useDisclosure(false);
   const [selectedRecord, setSelectedRecord] = useState(0);
@@ -25,13 +24,13 @@ const CatsPage = () => {
     },
   });
 
-  const { data:researcherData } = useQuery({
+  const { data: researcherData } = useQuery({
     queryKey: ["researchers"],
     queryFn: async () => {
-        const response = await fetch("/api/researchers");
-        return (await response.json()) as IResearcher[];
+      const response = await fetch("/api/researchers");
+      return (await response.json()) as IResearcher[];
     },
-});
+  });
 
   const handleRowSelection = (manualEntryId: number) => {
     if (selectedRecord !== manualEntryId) {
@@ -55,20 +54,20 @@ const CatsPage = () => {
       method: "DELETE",
       body: JSON.stringify({ id }),
     })
-    .then(async () => {
-      notifications.show({
-        color: "green",
-        title: "Delete Successful",
-        message: `Threat Removed`,
+      .then(async () => {
+        notifications.show({
+          color: "green",
+          title: "Delete Successful",
+          message: `Threat Removed`,
+        });
+      })
+      .catch(async () => {
+        notifications.show({
+          color: "red",
+          title: "Delete Failed",
+          message: "Threat still active",
+        });
       });
-    })
-    .catch(async () => {
-      notifications.show({
-        color: "red",
-        title: "Delete Failed",
-        message: "Threat still active",
-      });
-    });
   };
 
   if (isPending) {
@@ -87,7 +86,7 @@ const CatsPage = () => {
       >
         <AddCatForm />
       </Modal>
-      
+
       <Modal
         opened={openedEditModal}
         onClose={closeEditModal}
@@ -96,11 +95,16 @@ const CatsPage = () => {
         tt="capitalize"
         title="Create A Manual Entry"
       >
-        <EditCatForm selectedCat={data?.find(cat => { return cat.id === selectedRecord})} researchers={researcherData ?? []} />
+        <EditCatForm
+          selectedCat={data?.find((cat) => {
+            return cat.id === selectedRecord;
+          })}
+          researchers={researcherData ?? []}
+        />
       </Modal>
 
       <ScrollArea className="h-[80vh]">
-        <CatTable data={data ?? []} selectedRecord={selectedRecord} recordSelected={handleRowSelection}/>
+        <CatTable data={data ?? []} selectedRecord={selectedRecord} recordSelected={handleRowSelection} />
       </ScrollArea>
 
       <Group justify="flex-end">
@@ -114,7 +118,7 @@ const CatsPage = () => {
         )}
       </Group>
     </>
-  )
-}
+  );
+};
 
 export default CatsPage;

@@ -7,33 +7,31 @@ const AddNoteForm = () => {
     initialValues: {
       text: "",
     },
-    validate: {
-      
-    },
+    validate: {},
   });
 
   const handleSubmit = (values: typeof form.values) => {
-    fetch("/api/researchers", {
+    fetch("/api/notes", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(values),
     })
-    .then(async () => {
-      notifications.show({
-        color: "green",
-        title: "Save Successful",
-        message: `Note Saved`,
+      .then(async () => {
+        notifications.show({
+          color: "green",
+          title: "Save Successful",
+          message: `Note Saved`,
+        });
+      })
+      .catch(async () => {
+        notifications.show({
+          color: "red",
+          title: "Save Failed",
+          message: "Could not save the note",
+        });
       });
-    })
-    .catch(async () => {
-      notifications.show({
-        color: "red",
-        title: "Save Failed",
-        message: "Could not save the note",
-      });
-    });
   };
 
   return (
@@ -46,7 +44,9 @@ const AddNoteForm = () => {
         pb="md"
       />
 
-      <Button mt="md" type="submit">Save</Button>
+      <Button mt="md" type="submit">
+        Save
+      </Button>
     </form>
   );
 };

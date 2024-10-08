@@ -15,21 +15,17 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <head>
-        <ColorSchemeScript/>
+        <ColorSchemeScript />
       </head>
       <body>
         <ReactQueryClientProvider>
           <MantineProvider defaultColorScheme="dark">
             <Notifications />
-            <Body>
-              {children}
-            </Body>
+            <Body>{children}</Body>
           </MantineProvider>
         </ReactQueryClientProvider>
       </body>

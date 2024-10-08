@@ -1,11 +1,14 @@
 import { Button, TextInput } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
+import { IResearcher } from "~/types";
 
-const AddResearchForm = () => {
+const EditResearcherForm = (props: { data: IResearcher | null }) => {
+  const { data } = props;
+
   const form = useForm({
     initialValues: {
-      name: "",
+      name: data?.name || "",
     },
     validate: {
       name: isNotEmpty("Name is required"),
@@ -13,7 +16,7 @@ const AddResearchForm = () => {
   });
 
   const handleSubmit = (values: typeof form.values) => {
-    fetch("/api/researchers", {
+    fetch(`/api/researchers/${data?.id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -54,4 +57,4 @@ const AddResearchForm = () => {
   );
 };
 
-export default AddResearchForm;
+export default EditResearcherForm;

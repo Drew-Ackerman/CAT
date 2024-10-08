@@ -3,9 +3,8 @@ import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { ICat, IResearcher } from "~/types";
 
-const EditCatForm = (props: {selectedCat: ICat, researchers: IResearcher[]}) => {
-
-   const {selectedCat, researchers} = props;
+const EditCatForm = (props: { selectedCat: ICat; researchers: IResearcher[] }) => {
+  const { selectedCat, researchers } = props;
 
   const form = useForm({
     initialValues: {
@@ -32,20 +31,20 @@ const EditCatForm = (props: {selectedCat: ICat, researchers: IResearcher[]}) => 
       },
       body: JSON.stringify(values),
     })
-    .then(async () => {
-      notifications.show({
-        color: "green",
-        title: "Edit Successful",
-        message: `Edit cat ${selectedCat.tag}`,
+      .then(async () => {
+        notifications.show({
+          color: "green",
+          title: "Edit Successful",
+          message: `Edit cat ${selectedCat.tag}`,
+        });
+      })
+      .catch(async () => {
+        notifications.show({
+          color: "red",
+          title: "Save Failed",
+          message: "Could not edit",
+        });
       });
-    })
-    .catch(async () => {
-      notifications.show({
-        color: "red",
-        title: "Save Failed",
-        message: "Could not edit",
-      });
-    });
   };
 
   return (
@@ -87,16 +86,18 @@ const EditCatForm = (props: {selectedCat: ICat, researchers: IResearcher[]}) => 
         </Group>
       </Radio.Group>
 
-    <Select 
+      <Select
         label="Assign a researcher"
-        data={researchers.map(r => {
-            return {value:r.id.toString(), label:r.name};
+        data={researchers.map((r) => {
+          return { value: r.id.toString(), label: r.name };
         })}
         key={form.key("researcherId")}
         {...form.getInputProps("researcherId")}
-    />
+      />
 
-      <Button mt="md" type="submit">Save</Button>
+      <Button mt="md" type="submit">
+        Save
+      </Button>
     </form>
   );
 };
