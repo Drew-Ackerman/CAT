@@ -10,8 +10,6 @@ import AddNoteForm from "../components/notes/AddNoteForm";
 import NotesTable from "../components/notes/NotesTable";
 
 const NotesPage = () => {
-  const [openedAddModal, { open: openCreateModal, close: closeAddModal }] = useDisclosure(false);
-  const [openedEditModal, { open: openEditModal, close: closeEditModal }] = useDisclosure(false);
   const [selectedRecord, setSelectedRecord] = useState(0);
 
   //Pull all items and list them
@@ -53,59 +51,25 @@ const NotesPage = () => {
       });
   };
 
-  const createRecord = () => {
-    openCreateModal();
-  };
-
-  const editRecord = () => {
-    openEditModal();
-  };
-
   if (isPending) {
     return <span>Loading...</span>;
   }
 
+  console.log(data);
+
   return (
     <>
-      <Modal
-        opened={openedAddModal}
-        onClose={closeAddModal}
-        centered
-        size="lg"
-        tt="capitalize"
-        title="Create A Manual Entry"
-      >
-        <AddNoteForm />
-      </Modal>
-
-      {/* <Modal
-        opened={openedEditModal}
-        onClose={closeEditModal}
-        centered
-        size="lg"
-        tt="capitalize"
-        title="Create A Manual Entry"
-      >
-        <EditManualForm
-          entry={manual?.entries.find((entry) => {
-            return entry.id === selection;
-          })}
-        />
-      </Modal> */}
-
       <ScrollArea className="h-[80vh]">
         <NotesTable data={data ?? []} selectedRecord={selectedRecord} recordSelected={handleRowSelection} />
       </ScrollArea>
 
-      {/* <Group justify="flex-end">
-        {!selectedRecord &&<Button onClick={() => createRecord()}>Create</Button>}
-        {selectedRecord && <Button onClick={() => editRecord()}>Edit</Button>}
+      <Group justify="flex-end">
         {selectedRecord && (
           <Button color="red" onClick={() => deleteSelectedRecord()}>
             Delete
           </Button>
         )}
-      </Group> */}
+      </Group>
     </>
   );
 };

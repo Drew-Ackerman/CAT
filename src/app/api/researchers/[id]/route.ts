@@ -8,7 +8,11 @@ export async function GET(_request: Request, { params }: { params: { id: number 
   const data = await db.query.researchers.findFirst({
     where: eq(researchers.id, params.id),
     with: {
-      notes: true,
+      notes: {
+        with: {
+          cat: true,
+        },
+      },
       cats: true,
     },
   });

@@ -1,10 +1,9 @@
 import { Anchor, Checkbox, Table } from "@mantine/core";
-import Link from "next/link";
 import type { ICat, INotes, IResearcher } from "~/types";
 
 interface IData extends INotes {
   cat: ICat;
-  researchers: IResearcher;
+  researcher: IResearcher;
 }
 
 interface Props {
@@ -14,6 +13,7 @@ interface Props {
 }
 
 function NotesTable({ data, selectedRecord, recordSelected }: Props) {
+  console.log("d", data);
   const rows = data?.map((note: IData) => {
     return (
       <Table.Tr key={note.id} className={""}>
@@ -22,11 +22,15 @@ function NotesTable({ data, selectedRecord, recordSelected }: Props) {
         </Table.Td>
 
         <Table.Td className="capitalize">
-          <Anchor c="gray" underline="always">
-            <Link href={`/cats/${note.cat.id}`}>{note.cat.name}</Link>
+          <Anchor href={`/cats/${note.cat.id}`} c="gray" underline="always">
+            {note.cat.name}
           </Anchor>
         </Table.Td>
-        <Table.Td className="capitalize">{note.researchers.name}</Table.Td>
+        <Table.Td className="capitalize">
+          <Anchor href={`/researchers/${note.researcher.id}`} c="gray" underline="always">
+            {note.researcher.name}
+          </Anchor>
+        </Table.Td>
         <Table.Td className="truncate capitalize">{note.text}</Table.Td>
         <Table.Td className="capitalize">{note.timestamp}</Table.Td>
       </Table.Tr>

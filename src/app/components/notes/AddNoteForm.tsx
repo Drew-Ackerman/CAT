@@ -1,13 +1,17 @@
 import { Button, TextInput } from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 
-const AddNoteForm = () => {
+const AddNoteForm = ({ catId, researcherId }: { catId: number; researcherId: number }) => {
   const form = useForm({
     initialValues: {
       text: "",
+      catId: catId,
+      researcherId: researcherId,
     },
-    validate: {},
+    validate: {
+      text: isNotEmpty("Note text is needed"),
+    },
   });
 
   const handleSubmit = (values: typeof form.values) => {
@@ -39,11 +43,10 @@ const AddNoteForm = () => {
       <TextInput
         label="Note Text"
         placeholder="Cat observation text"
-        key={form.key("name")}
-        {...form.getInputProps("name")}
+        key={form.key("text")}
+        {...form.getInputProps("text")}
         pb="md"
       />
-
       <Button mt="md" type="submit">
         Save
       </Button>

@@ -1,14 +1,35 @@
 "use client";
 
-import { Badge, Button, Card, Group, Image, Modal, Paper, rem, Stack, Tabs, Text } from "@mantine/core";
+import {
+  Badge,
+  Button,
+  Card,
+  Flex,
+  Grid,
+  Group,
+  Image,
+  Modal,
+  Paper,
+  rem,
+  ScrollArea,
+  Stack,
+  Tabs,
+  Text,
+  Title,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconSettings, IconNote } from "@tabler/icons-react";
+import { IconSettings, IconNote, IconMars, IconVenus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import AddNoteForm from "~/app/components/notes/AddNoteForm";
 import { ICat, INotes, IResearcher } from "~/types";
 
 const iconStyle = { width: rem(12), height: rem(12) };
+
+type Response = IResearcher & {
+  notes: Array<INotes & { cat: ICat }>;
+  cats: ICat[];
+};
 
 export default function ResearcherPage() {
   const { id } = useParams();
@@ -19,7 +40,8 @@ export default function ResearcherPage() {
     queryKey: ["researcher"],
     queryFn: async () => {
       const response = await fetch(`/api/researchers/${id}`, { method: "GET" });
-      return (await response.json()) as IResearcher & { notes: INotes[]; cats: ICat[] };
+      const data = (await response.json()) as Response;
+      return data;
     },
   });
 
@@ -31,14 +53,32 @@ export default function ResearcherPage() {
 
   const latestNote = researcher?.notes.at(0);
 
-  const notes = researcher?.notes?.map((n) => {
-    const time = new Date(n.timestamp).toLocaleString();
+  const notes = researcher?.notes?.map((note) => {
+    const time = new Date(note.timestamp).toLocaleString();
 
     return (
-      <Group grow justify="space-between">
-        <Text className={"ellipses"}>{n.text}</Text>
+      <Group m="sm" grow justify="space-between">
+        <Text>{note.cat.name}</Text>
+        <Text className={"ellipses"}>{note.text}</Text>
         <Text>{time}</Text>
       </Group>
+    );
+  });
+
+  const cats = researcher?.cats.map((cat) => {
+    return (
+      <Card key={cat.id} m="md" shadow="sm" padding="lg" radius="md" withBorder>
+        <Card.Section>
+          <Image src="/photos/moons.jpg" h={100} alt="Cat photo" />
+        </Card.Section>
+        <Group mt="md" mb="xs">
+          <Text fw={500}>{cat.name}</Text>
+          {cat.sex ? <IconMars /> : <IconVenus />}
+        </Group>
+        <Group>
+          <Badge color="pink">On Sale</Badge>
+        </Group>
+      </Card>
     );
   });
 
@@ -55,23 +95,20 @@ export default function ResearcherPage() {
         <AddNoteForm />
       </Modal>
 
-      <Group grow>
-        <Card shadow="sm" padding="lg" radius="md" withBorder>
-          <Card.Section>
-            <Image src="/photos/moons.jpg" h={200} alt="Cat photo" />
-          </Card.Section>
+      <Grid>
+        <Grid.Col span={4}>
+          <Card shadow="sm" padding="lg" radius="md" withBorder>
+            <Card.Section>
+              <Image src="/photos/drew.jpg" h={300} alt="Researcher photo" />
+            </Card.Section>
 
-          <Group justify="space-between" mt="md" mb="xs">
-            <Text fw={500}>{researcher?.name}</Text>
-            <Badge color="pink">On Sale</Badge>
-          </Group>
+            <Group justify="space-between" mt="md" mb="xs">
+              <Title order={2}>{researcher?.name}</Title>
+            </Group>
+          </Card>
+        </Grid.Col>
 
-          <Text size="sm" c="dimmed">
-            {latestNote ? latestNote.text : "Nothing to note here..."}
-          </Text>
-        </Card>
-
-        <Paper p="md" radius="md" withBorder>
+        <Grid.Col span={8}>
           <Tabs defaultValue="notes">
             <Tabs.List>
               <Tabs.Tab value="notes" leftSection={<IconNote style={iconStyle} />}>
@@ -83,9 +120,11 @@ export default function ResearcherPage() {
             </Tabs.List>
 
             <Tabs.Panel value="notes">
-              <Stack align="stretch" justify="flex-start" gap="md" mt="xs">
-                {notes}
-              </Stack>
+              <ScrollArea>
+                <Stack align="stretch" justify="flex-start" gap="md" mt="xs">
+                  {notes}
+                </Stack>
+              </ScrollArea>
               <Group justify="flex-end" grow>
                 <Button maw={100} mt="md" onClick={() => openAddNote()}>
                   Add Note
@@ -95,8 +134,14 @@ export default function ResearcherPage() {
 
             <Tabs.Panel value="traits">Settings tab content</Tabs.Panel>
           </Tabs>
-        </Paper>
-      </Group>
+        </Grid.Col>
+
+        <Grid.Col span={12}>
+          <Flex mt={"md"} mih={100} gap="md" justify="flex-start" align="center" direction="row" wrap="wrap">
+            {cats}
+          </Flex>
+        </Grid.Col>
+      </Grid>
     </Paper>
   );
 }
