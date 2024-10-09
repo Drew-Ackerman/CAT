@@ -1,36 +1,54 @@
-import { Anchor, Checkbox, Table } from "@mantine/core";
-import type { IResearcher } from "~/types";
+import { Avatar, Group, Select, Table, Text } from "@mantine/core";
+import { IconUser } from "@tabler/icons-react";
+import type { IUser } from "~/types";
 
 interface Props {
-  data: IResearcher[];
-  selectedRecord: IResearcher | null;
-  recordSelected: (record: IResearcher) => void;
+  data: IUser[];
+  selectedRecord: IUser | null;
+  recordSelected: (record: IUser) => void;
 }
 
-function ResearchersTable({ data, selectedRecord, recordSelected }: Props) {
-  const rows = data?.map((researcher: IResearcher) => {
+function ResearchersTable({ data, recordSelected }: Props) {
+  const rows = data?.map((researcher: IUser) => {
     return (
       <Table.Tr key={researcher.id} className={""}>
         <Table.Td>
-          <Checkbox checked={selectedRecord?.id === researcher.id} onChange={() => recordSelected(researcher)} />
+          <Group gap="sm">
+            <Avatar size={40} radius={40}><IconUser/></Avatar>
+            <div>
+              <Text fz="sm" fw={500} className="capitalize">
+                {researcher.name}
+              </Text>
+              <Text fz="xs" c="dimmed">
+                {researcher.email}
+              </Text>
+            </div>
+          </Group>
         </Table.Td>
-        <Table.Td className="capitalize">
-          <Anchor href={`/researchers/${researcher.id}`}>{researcher.name}</Anchor>
+        <Table.Td>
+          <Select 
+            data={["admin", "user"]}
+            defaultValue={researcher.role}
+            variant="unstyled"
+            allowDeselect={false}
+          />
         </Table.Td>
       </Table.Tr>
     );
   });
 
   return (
-    <Table striped stripedColor="violet" miw={800} verticalSpacing="sm">
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>Select</Table.Th>
-          <Table.Th>Name</Table.Th>
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>{rows}</Table.Tbody>
-    </Table>
+    <Table.ScrollContainer minWidth={600}>
+      <Table verticalSpacing="sm">
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Employee</Table.Th>
+            <Table.Th>Role</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>{rows}</Table.Tbody>
+      </Table>
+    </Table.ScrollContainer>
   );
 }
 

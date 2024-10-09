@@ -1,11 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Button, Group, Modal, ScrollArea } from "@mantine/core";
+import { Button, Group, Modal } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
-import { IResearcher } from "~/types";
+import { IResearcher, IUser } from "~/types";
 import AddResearchForm from "../components/researchers/AddResearchForm";
 import EditResearcherForm from "../components/researchers/EditResearcherForm";
 import ResearchersTable from "../components/researchers/ResearchersTable";
@@ -19,8 +19,8 @@ const ResearchersPage = () => {
   const { isPending, data } = useQuery({
     queryKey: ["researchers"],
     queryFn: async () => {
-      const response = await fetch("/api/researchers");
-      return (await response.json()) as IResearcher[];
+      const response = await fetch("/api/users");
+      return (await response.json()) as IUser[];
     },
   });
 
@@ -80,9 +80,7 @@ const ResearchersPage = () => {
         <EditResearcherForm data={selectedRecord} />
       </Modal>
 
-      <ScrollArea className="h-[80vh]">
-        <ResearchersTable data={data ?? []} selectedRecord={selectedRecord} recordSelected={handleRowSelection} />
-      </ScrollArea>
+      <ResearchersTable data={data ?? []} selectedRecord={selectedRecord} recordSelected={handleRowSelection} />
 
       <Group justify="flex-end">
         {!selectedRecord && <Button onClick={() => openCreateModal()}>Create</Button>}

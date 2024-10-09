@@ -21,11 +21,15 @@ export const users = createTable("user", {
     mode: "timestamp",
   }).default(sql`(unixepoch())`),
   image: text("image", { length: 255 }),
+  role: text("role").notNull(),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  cats: many(cats),
+  notes: many(notes),
 }));
+
 
 export const accounts = createTable(
   "account",
@@ -92,14 +96,14 @@ export const cats = createTable("cat", {
   tag: text("tag", { length: 15 }).notNull().unique(),
   color: text("color", { length: 15 }),
   sex: integer("sex", { mode: "boolean" }),
-  researcherId: int("researcherId").references(() => researchers.id),
+  researcherId: int("researcherId").references(() => users.id),
 });
 
 export const catRelations = relations(cats, ({ many, one }) => ({
   notes: many(notes),
-  researcher: one(researchers, {
+  researcher: one(users, {
     fields: [cats.researcherId],
-    references: [researchers.id],
+    references: [users.id],
     relationName: "researcher",
   }),
 }));
@@ -111,7 +115,7 @@ export const notes = createTable("notes", {
     .notNull()
     .default(sql`(unixepoch())`),
   catId: int("catId").references(() => cats.id),
-  researcherId: int("researcherId").references(() => researchers.id),
+  researcherId: int("researcherId").references(() => users.id),
 });
 
 export const notesRelations = relations(notes, ({ one }) => ({
@@ -120,19 +124,9 @@ export const notesRelations = relations(notes, ({ one }) => ({
     references: [cats.id],
     relationName: "cats",
   }),
-  researcher: one(researchers, {
+  researcher: one(users, {
     fields: [notes.researcherId],
-    references: [researchers.id],
+    references: [users.id],
     relationName: "notes",
   }),
-}));
-
-export const researchers = createTable("researchers", {
-  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  name: text("name", { length: 100 }).notNull(),
-});
-
-export const researcherRelations = relations(researchers, ({ many }) => ({
-  cats: many(cats),
-  notes: many(notes),
 }));

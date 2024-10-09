@@ -38,7 +38,7 @@ const Navbar = (props: { linkData: (LinksGroupProps | LinkProps)[] }) => {
       <div className={classes.navbarMain}>
         <Group className={classes.header} justify="space-between">
           <Link href="/">
-            <h1>RPG</h1>
+            <h1>C.A.T</h1>
           </Link>
           <Code fw={700}>v0</Code>
         </Group>

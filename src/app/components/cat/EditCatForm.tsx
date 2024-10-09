@@ -1,10 +1,10 @@
-import { Button, Combobox, Group, MultiSelect, Radio, Select, TextInput } from "@mantine/core";
+import { Button, Group, Radio, TextInput } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { ICat, IResearcher } from "~/types";
+import { ICat } from "~/types";
 
-const EditCatForm = (props: { selectedCat: ICat; researchers: IResearcher[] }) => {
-  const { selectedCat, researchers } = props;
+const EditCatForm = (props: { selectedCat: ICat}) => {
+  const { selectedCat } = props;
 
   const form = useForm({
     initialValues: {
@@ -12,7 +12,6 @@ const EditCatForm = (props: { selectedCat: ICat; researchers: IResearcher[] }) =
       tag: selectedCat.tag,
       color: selectedCat.color,
       sex: selectedCat.sex,
-      researcherId: null,
     },
     validate: {
       name: isNotEmpty("Name is required"),
@@ -84,15 +83,6 @@ const EditCatForm = (props: { selectedCat: ICat; researchers: IResearcher[] }) =
           <Radio value="0" label="Female" />
         </Group>
       </Radio.Group>
-
-      <Select
-        label="Assign a researcher"
-        data={researchers.map((r) => {
-          return { value: r.id.toString(), label: r.name };
-        })}
-        key={form.key("researcherId")}
-        {...form.getInputProps("researcherId")}
-      />
 
       <Button mt="md" type="submit">
         Save

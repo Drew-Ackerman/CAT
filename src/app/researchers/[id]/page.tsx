@@ -45,11 +45,11 @@ export default function ResearcherPage() {
     const time = new Date(note.timestamp).toLocaleString();
 
     return (
-      <Group m="sm" grow justify="space-between">
+      <Flex m="sm" justify="space-between">
         <Text>{note.cat.name}</Text>
         <Text className={"ellipses"}>{note.text}</Text>
         <Text>{time}</Text>
-      </Group>
+      </Flex>
     );
   });
 
@@ -87,18 +87,19 @@ export default function ResearcherPage() {
         </Grid.Col>
 
         <Grid.Col span={8}>
-          <Title>Recent Notes</Title>
+          <Title order={2}>Assigned Inmates</Title>
+          <Flex mt={"md"} mih={100} gap="md" justify="flex-start" align="center" direction="row" wrap="wrap">
+            {cats}
+          </Flex>
+        </Grid.Col>
+
+        <Grid.Col span={12}>
+          <Title order={2}>Recent Notes</Title>
           <ScrollArea>
             <Stack align="stretch" justify="flex-start" gap="md" mt="xs">
               {notes}
             </Stack>
           </ScrollArea>
-        </Grid.Col>
-
-        <Grid.Col span={12}>
-          <Flex mt={"md"} mih={100} gap="md" justify="flex-start" align="center" direction="row" wrap="wrap">
-            {cats}
-          </Flex>
         </Grid.Col>
       </Grid>
     </Paper>

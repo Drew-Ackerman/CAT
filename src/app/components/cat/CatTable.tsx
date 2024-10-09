@@ -1,45 +1,80 @@
-import { Anchor, Checkbox, Table } from "@mantine/core";
-import Link from "next/link";
+import { ActionIcon, Avatar, Group, Menu, rem, Table, Text } from "@mantine/core";
+import { IconDots, IconPencil, IconTrash, IconUser } from "@tabler/icons-react";
 import { ICat } from "~/types";
 
 interface Props {
   data: ICat[];
-  selectedRecord: number;
-  recordSelected: (id: number) => void;
+  editRecord: (record: ICat) => void;
+  assignResearcher: (record: ICat) => void;
+  deleteRecord: (record: ICat) => void;
 }
 
-function CatTable({ data, selectedRecord, recordSelected }: Props) {
+const iconStyle = { width: rem(16), height: rem(16) }
+
+function CatTable({ data, editRecord, assignResearcher, deleteRecord}: Props) {
+
   const rows = data?.map((cat: ICat) => {
     return (
       <Table.Tr key={cat.id}>
-        <Table.Td>
-          <Checkbox checked={selectedRecord === cat.id} onChange={() => recordSelected(cat.id)} />
-        </Table.Td>
         <Table.Td className="capitalize">
-          <Anchor c="gray" underline="always">
-            <Link href={`/cats/${cat.id}`}>{cat.name}</Link>
-          </Anchor>
+          <Group gap="sm">
+            <Avatar size={40} radius={40}><IconUser/></Avatar>
+            <div>
+              <Text fz="sm" fw={500} className="capitalize">
+                {cat.name}
+              </Text>
+            </div>
+          </Group>
         </Table.Td>
         <Table.Td className="capitalize">{cat.tag}</Table.Td>
         <Table.Td className="capitalize">{cat.color}</Table.Td>
         <Table.Td className="capitalize">{cat.sex ? "Male" : "Female"}</Table.Td>
+
+          <ActionIcon variant="subtle" color="gray" onClick={() => editRecord(cat)}>
+            <IconPencil  style={iconStyle} stroke={1.5} />
+          </ActionIcon>
+          <Menu
+            transitionProps={{ transition: 'pop' }}
+            withArrow
+            position="bottom-end"
+            withinPortal
+          >
+            <Menu.Target>
+              <ActionIcon variant="subtle" color="gray">
+                <IconDots style={iconStyle} stroke={1.5} />
+              </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item onClick={() => assignResearcher(cat)} leftSection={<IconUser style={iconStyle} stroke={1.5} />}>
+                Assign Researcher
+              </Menu.Item>
+              <Menu.Item 
+                onClick={() => deleteRecord(cat)}
+                leftSection={<IconTrash style={iconStyle} stroke={1.5} />}
+                color="red"
+              >
+                Remove
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
       </Table.Tr>
     );
   });
 
   return (
-    <Table striped stripedColor="violet" miw={800} verticalSpacing="sm">
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>Select</Table.Th>
-          <Table.Th>Name</Table.Th>
-          <Table.Th>Tag</Table.Th>
-          <Table.Th>Color</Table.Th>
-          <Table.Th>Sex</Table.Th>
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>{rows}</Table.Tbody>
-    </Table>
+    <Table.ScrollContainer minWidth={600} >
+      <Table verticalSpacing="sm">
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Name</Table.Th>
+            <Table.Th>Tag</Table.Th>
+            <Table.Th>Color</Table.Th>
+            <Table.Th>Sex</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>{rows}</Table.Tbody>
+      </Table>
+    </Table.ScrollContainer>
   );
 }
 

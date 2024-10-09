@@ -1,19 +1,21 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Button, Group, Modal, ScrollArea } from "@mantine/core";
+import { Button, Group, Modal } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
-import type { ICat, IResearcher } from "~/types";
+import type { ICat, IUser } from "~/types";
 import CatTable from "../components/cat/CatTable";
 import AddCatForm from "../components/cat/AddCatForm";
 import EditCatForm from "../components/cat/EditCatForm";
+import { useState } from "react";
+import AssignResearcherForm from "../components/cat/AssignResearcherForm";
 
 const CatsPage = () => {
-  const [openedAddModal, { open: openCreateModal, close: closeAddModal }] = useDisclosure(false);
+  const [openedAddModal, { open: openAddModal, close: closeAddModal }] = useDisclosure(false);
   const [openedEditModal, { open: openEditModal, close: closeEditModal }] = useDisclosure(false);
-  const [selectedRecord, setSelectedRecord] = useState(0);
+  const [openedAssignResearcherModal, { open: openAssignResearcherModal, close: closeAssignResearcherModal }] = useDisclosure(false);
+  const [selectedRecord, setSelectedRecord] = useState<ICat>({} as ICat);
 
   //Pull all items and list them
   const { isPending, data } = useQuery({
@@ -24,35 +26,32 @@ const CatsPage = () => {
     },
   });
 
-  const { data: researcherData } = useQuery({
+  const { data: researchers } = useQuery({
     queryKey: ["researchers"],
     queryFn: async () => {
-      const response = await fetch("/api/researchers");
-      return (await response.json()) as IResearcher[];
+      const response = await fetch("/api/users");
+      return (await response.json()) as IUser[];
     },
   });
 
-  const handleRowSelection = (manualEntryId: number) => {
-    if (selectedRecord !== manualEntryId) {
-      setSelectedRecord(manualEntryId);
-    } else {
-      setSelectedRecord(0);
-    }
+  const createRecord = () => {
+    openAddModal();
   };
 
-  const editRecord = () => {
+  const editRecord = (cat: ICat) => {
+    setSelectedRecord(cat);
     openEditModal();
   };
 
-  const createRecord = () => {
-    openCreateModal();
+  const assignResearcher = (cat: ICat) => {
+    setSelectedRecord(cat);
+    openAssignResearcherModal();
   };
 
-  const deleteSelectedRecord = () => {
-    const id = selectedRecord;
-    fetch("/api/manual", {
+  const deleteRecord = (record: ICat) => {
+    const {id} = record;
+    fetch(`/api/cats/${id}`, {
       method: "DELETE",
-      body: JSON.stringify({ id }),
     })
       .then(async () => {
         notifications.show({
@@ -82,7 +81,7 @@ const CatsPage = () => {
         centered
         size="lg"
         tt="capitalize"
-        title="Create A Manual Entry"
+        title="Add Cat"
       >
         <AddCatForm />
       </Modal>
@@ -93,30 +92,27 @@ const CatsPage = () => {
         centered
         size="lg"
         tt="capitalize"
-        title="Create A Manual Entry"
+        title="Edit Cat"
       >
-        <EditCatForm
-          selectedCat={data?.find((cat) => {
-            return cat.id === selectedRecord;
-          })}
-          researchers={researcherData ?? []}
-        />
+        <EditCatForm selectedCat={selectedRecord}/>
       </Modal>
 
-      <ScrollArea className="h-[80vh]">
-        <CatTable data={data ?? []} selectedRecord={selectedRecord} recordSelected={handleRowSelection} />
-      </ScrollArea>
+      <Modal
+        opened={openedAssignResearcherModal}
+        onClose={closeAssignResearcherModal}
+        centered
+        size="lg"
+        tt="capitalize"
+        title="Assign Researcher"
+      >
+        <AssignResearcherForm selectedCat={selectedRecord} researchers={researchers ?? []}/>
+      </Modal>
 
       <Group justify="flex-end">
-        {!selectedRecord && <Button onClick={() => createRecord()}>Create</Button>}
-
-        {selectedRecord && <Button onClick={() => editRecord()}>Edit</Button>}
-        {selectedRecord && (
-          <Button color="red" onClick={() => deleteSelectedRecord()}>
-            Delete
-          </Button>
-        )}
+        <Button onClick={() => createRecord()}>Add</Button>
       </Group>
+
+      <CatTable data={data ?? []} editRecord={editRecord} assignResearcher={assignResearcher} deleteRecord={deleteRecord}/>
     </>
   );
 };
