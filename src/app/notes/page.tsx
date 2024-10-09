@@ -1,12 +1,10 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Button, Group, Modal, ScrollArea } from "@mantine/core";
+import { Button, Group, ScrollArea } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useState } from "react";
-import { useDisclosure } from "@mantine/hooks";
 import { INotes } from "~/types";
-import AddNoteForm from "../components/notes/AddNoteForm";
 import NotesTable from "../components/notes/NotesTable";
 
 const NotesPage = () => {
@@ -54,8 +52,6 @@ const NotesPage = () => {
   if (isPending) {
     return <span>Loading...</span>;
   }
-
-  console.log(data);
 
   return (
     <>

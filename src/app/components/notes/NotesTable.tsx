@@ -13,7 +13,6 @@ interface Props {
 }
 
 function NotesTable({ data, selectedRecord, recordSelected }: Props) {
-  console.log("d", data);
   const rows = data?.map((note: IData) => {
     return (
       <Table.Tr key={note.id} className={""}>

@@ -23,7 +23,6 @@ const EditCatForm = (props: { selectedCat: ICat; researchers: IResearcher[] }) =
   });
 
   const handleSubmit = (values: typeof form.values) => {
-    console.log("vals", values);
     fetch(`/api/cats/${selectedCat.id}`, {
       method: "PATCH",
       headers: {
