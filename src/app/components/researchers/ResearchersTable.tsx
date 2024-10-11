@@ -1,26 +1,27 @@
-import { Avatar, Group, Select, Table, Text } from "@mantine/core";
-import { IconUser } from "@tabler/icons-react";
+import { ActionIcon, Avatar, Group, rem, Select, Table, Text } from "@mantine/core";
+import { IconUser, IconZoom } from "@tabler/icons-react";
+import Link from "next/link";
 import type { IUser } from "~/types";
 
 interface Props {
   data: IUser[];
-  selectedRecord: IUser | null;
-  recordSelected: (record: IUser) => void;
+  editRecord: (record: IUser) => void;
+  updateRole: (researcher: IUser, role: string | null) => void;
 }
 
-function ResearchersTable({ data, recordSelected }: Props) {
-  const rows = data?.map((researcher: IUser) => {
+function ResearchersTable({ data, updateRole }: Props) {
+  const rows = data?.map((user: IUser) => {
     return (
-      <Table.Tr key={researcher.id} className={""}>
+      <Table.Tr key={user.id} className={""}>
         <Table.Td>
           <Group gap="sm">
             <Avatar size={40} radius={40}><IconUser/></Avatar>
             <div>
               <Text fz="sm" fw={500} className="capitalize">
-                {researcher.name}
+                {user.name}
               </Text>
               <Text fz="xs" c="dimmed">
-                {researcher.email}
+                {user.email}
               </Text>
             </div>
           </Group>
@@ -28,10 +29,17 @@ function ResearchersTable({ data, recordSelected }: Props) {
         <Table.Td>
           <Select 
             data={["admin", "user"]}
-            defaultValue={researcher.role}
+            defaultValue={user.role}
             variant="unstyled"
             allowDeselect={false}
+            onChange={(value, _option) => updateRole(user, value)}
           />
+        </Table.Td>
+
+        <Table.Td>
+          <ActionIcon variant="subtle" color="gray" component={Link} href={`/researchers/${user.id}`}>
+            <IconZoom  style={ { width: rem(20), height: rem(20) }} stroke={1.5} />
+          </ActionIcon>
         </Table.Td>
       </Table.Tr>
     );

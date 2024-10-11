@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Button, Group, ScrollArea } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useState } from "react";
 import { INotes } from "~/types";
@@ -54,19 +53,7 @@ const NotesPage = () => {
   }
 
   return (
-    <>
-      <ScrollArea className="h-[80vh]">
-        <NotesTable data={data ?? []} selectedRecord={selectedRecord} recordSelected={handleRowSelection} />
-      </ScrollArea>
-
-      <Group justify="flex-end">
-        {selectedRecord && (
-          <Button color="red" onClick={() => deleteSelectedRecord()}>
-            Delete
-          </Button>
-        )}
-      </Group>
-    </>
+    <NotesTable data={data ?? []} selectedRecord={selectedRecord} recordSelected={handleRowSelection} />
   );
 };
 

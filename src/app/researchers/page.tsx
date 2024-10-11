@@ -13,7 +13,7 @@ import ResearchersTable from "../components/researchers/ResearchersTable";
 const ResearchersPage = () => {
   const [openedAddModal, { open: openCreateModal, close: closeAddModal }] = useDisclosure(false);
   const [openedEditModal, { open: openEditModal, close: closeEditModal }] = useDisclosure(false);
-  const [selectedRecord, setSelectedRecord] = useState<IResearcher | null>(null);
+  const [selectedRecord, setSelectedRecord] = useState<IResearcher>({} as IResearcher);
 
   //Pull all items and list them
   const { isPending, data } = useQuery({
@@ -24,32 +24,54 @@ const ResearchersPage = () => {
     },
   });
 
-  const handleRowSelection = (record: IResearcher) => {
-    if (selectedRecord?.id !== record.id) {
-      setSelectedRecord(record);
-    } else {
-      setSelectedRecord(null); //Uncheck if someone clicked the same record.
+  const editRecord = () => {
+
+  }
+
+  const updateRole = (record: IUser, role: string | null) => {
+    if(!role){
+      return;
     }
-  };
+
+    fetch(`api/users/${record.id}/role`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json"},
+      body: JSON.stringify(role),
+    })
+    .then(async () => {
+      notifications.show({
+        color: "green",
+        title: "Role Updated",
+        message: `Role updated`,
+      });
+    })
+    .catch(async () => {
+      notifications.show({
+        color: "red",
+        title: "Role Unchanged",
+        message: "Users role remains unchanged.",
+      });
+    });
+  }
 
   const deleteSelectedRecord = () => {
-    fetch(`api/researchers/${selectedRecord?.id}`, {
+    fetch(`api/users/${selectedRecord?.id}`, {
       method: "DELETE",
     })
-      .then(async () => {
-        notifications.show({
-          color: "green",
-          title: "Delete Successful",
-          message: `Threat Removed`,
-        });
-      })
-      .catch(async () => {
-        notifications.show({
-          color: "red",
-          title: "Delete Failed",
-          message: "Threat still active",
-        });
+    .then(async () => {
+      notifications.show({
+        color: "green",
+        title: "Delete Successful",
+        message: `Threat Removed`,
       });
+    })
+    .catch(async () => {
+      notifications.show({
+        color: "red",
+        title: "Delete Failed",
+        message: "Threat still active",
+      });
+    });
   };
 
   if (isPending) {
@@ -64,7 +86,7 @@ const ResearchersPage = () => {
         centered
         size="lg"
         tt="capitalize"
-        title="Create A Manual Entry"
+        title="Add Researcher"
       >
         <AddResearchForm />
       </Modal>
@@ -75,22 +97,16 @@ const ResearchersPage = () => {
         centered
         size="lg"
         tt="capitalize"
-        title="Create A Manual Entry"
+        title="Edit Researcher"
       >
         <EditResearcherForm data={selectedRecord} />
       </Modal>
 
-      <ResearchersTable data={data ?? []} selectedRecord={selectedRecord} recordSelected={handleRowSelection} />
-
       <Group justify="flex-end">
-        {!selectedRecord && <Button onClick={() => openCreateModal()}>Create</Button>}
-        {selectedRecord && <Button onClick={() => openEditModal()}>Edit</Button>}
-        {selectedRecord && (
-          <Button color="red" onClick={() => deleteSelectedRecord()}>
-            Delete
-          </Button>
-        )}
+        <Button onClick={() => openCreateModal()}>Create</Button>
       </Group>
+
+      <ResearchersTable data={data ?? []} editRecord={editRecord} updateRole={updateRole} />
     </>
   );
 };

@@ -1,5 +1,5 @@
 import { relations, sql } from "drizzle-orm";
-import { index, int, integer, primaryKey, sqliteTableCreator, text } from "drizzle-orm/sqlite-core";
+import { index, int, integer, primaryKey, real, sqliteTableCreator, text } from "drizzle-orm/sqlite-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
 /**
@@ -11,10 +11,9 @@ import { type AdapterAccount } from "next-auth/adapters";
 export const createTable = sqliteTableCreator((name) => `stg-cypress-project_${name}`);
 
 export const users = createTable("user", {
-  id: text("id", { length: 255 })
+  id: int("id")
     .notNull()
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
+    .primaryKey({ autoIncrement: true }),
   name: text("name", { length: 255 }),
   email: text("email", { length: 255 }).notNull(),
   emailVerified: int("email_verified", {
@@ -114,6 +113,8 @@ export const notes = createTable("notes", {
   timestamp: integer("timestamp", { mode: "timestamp" })
     .notNull()
     .default(sql`(unixepoch())`),
+  temperament: real("temperament").notNull().default(5.0),
+  radioactivity: int("radioactivity").notNull().default(3),
   catId: int("catId").references(() => cats.id),
   researcherId: int("researcherId").references(() => users.id),
 });

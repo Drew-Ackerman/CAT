@@ -1,4 +1,5 @@
-import { Anchor, Checkbox, Table } from "@mantine/core";
+import { Anchor, Avatar, Group, Table } from "@mantine/core";
+import { IconCat, IconUser } from "@tabler/icons-react";
 import type { ICat, INotes, IResearcher } from "~/types";
 
 interface IData extends INotes {
@@ -8,39 +9,41 @@ interface IData extends INotes {
 
 interface Props {
   data: IData[];
-  selectedRecord: number;
   recordSelected: (id: number) => void;
 }
 
-function NotesTable({ data, selectedRecord, recordSelected }: Props) {
+function NotesTable({ data, recordSelected }: Props) {
   const rows = data?.map((note: IData) => {
     return (
       <Table.Tr key={note.id} className={""}>
-        <Table.Td>
-          <Checkbox checked={selectedRecord === note.id} onChange={() => recordSelected(note.id)} />
+        <Table.Td className="capitalize">
+          <Group gap="sm">
+            <Avatar size={40} radius={40}><IconCat/></Avatar>
+            <Anchor href={`/cats/${note.cat.id}`} c="gray" underline="always">
+              {note.cat.name}
+            </Anchor>
+          </Group>
         </Table.Td>
 
         <Table.Td className="capitalize">
-          <Anchor href={`/cats/${note.cat.id}`} c="gray" underline="always">
-            {note.cat.name}
-          </Anchor>
-        </Table.Td>
-        <Table.Td className="capitalize">
-          <Anchor href={`/researchers/${note.researcher.id}`} c="gray" underline="always">
-            {note.researcher.name}
-          </Anchor>
+          <Group gap="sm">
+            <Avatar size={40} radius={40}><IconUser/></Avatar>
+            <Anchor href={`/researchers/${note.researcher.id}`} c="gray" underline="always">
+              {note.researcher.name}
+            </Anchor>
+          </Group>
+
         </Table.Td>
         <Table.Td className="truncate capitalize">{note.text}</Table.Td>
-        <Table.Td className="capitalize">{note.timestamp}</Table.Td>
+        <Table.Td className="capitalize">{new Date(note.timestamp).toLocaleString()}</Table.Td>
       </Table.Tr>
     );
   });
 
   return (
-    <Table striped stripedColor="violet" miw={800} verticalSpacing="sm">
+    <Table miw={800} verticalSpacing="sm">
       <Table.Thead>
         <Table.Tr>
-          <Table.Th>Select</Table.Th>
           <Table.Th>Cat</Table.Th>
           <Table.Th>Researcher</Table.Th>
           <Table.Th>Text</Table.Th>

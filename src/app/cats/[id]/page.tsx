@@ -1,15 +1,15 @@
 "use client";
 
-import { Badge, Button, Card, Grid, Group, Image, Modal, Paper, ScrollArea, Stack, Text, Title } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { Flex, Grid, Paper, ScrollArea, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import AddNoteForm from "~/app/components/notes/AddNoteForm";
+import CatInfoCard from "~/app/components/cat/CatInfoCard";
+import AddNoteCard from "~/app/components/notes/AddNoteCard";
+import NoteCard from "~/app/components/notes/NoteCard";
 import { ICat, INotes } from "~/types";
 
 export default function CatPage() {
   const { id } = useParams();
-  const [openedAddNote, { open: openAddNote, close: closeAddNote }] = useDisclosure(false);
 
   //Pull all items and list them
   const { isPending, data: cat } = useQuery({
@@ -20,74 +20,31 @@ export default function CatPage() {
     },
   });
 
-  if (isPending) {
+  if (!cat) {
     return <p>loading</p>;
   }
 
-  const notes = cat?.notes?.map((n) => {
-    const time = new Date(n.timestamp).toLocaleString();
-    return (
-      <Group key={n.id} grow justify="space-between">
-        <Text className={"ellipses"}>{n.text}</Text>
-        <Text>{time}</Text>
-      </Group>
+  const notes = Array.of(<AddNoteCard catId={cat.id} researcherId={cat?.researcherId}/>);
+  cat?.notes?.forEach((note) => {
+    notes.push(
+        <NoteCard key={note.id} data={note}/>
     );
   });
 
-  const catProfile = (
-    <Card shadow="sm" padding="lg" radius="md" withBorder>
-      <Card.Section>
-        <Image src="/photos/moons.jpg" h={200} alt="Cat photo" />
-      </Card.Section>
-
-      <Group justify="space-between" mt="md" mb="xs">
-        <Text fw={500}>{cat?.name}</Text>
-        <Badge color="pink">On Sale</Badge>
-      </Group>
-
-      <Text size="sm" c="dimmed">
-        {cat?.notes.at(0) ? cat?.notes.at(0)?.text : "Nothing to note here..."}
-      </Text>
-    </Card>
-  );
-
-  const traits = (
-    <Paper>
-      <Title>Traits</Title>
-    </Paper>
-  );
-
   return (
     <Paper h={"95dvh"} p="lg" radius="md">
-      <Modal
-        opened={openedAddNote}
-        onClose={closeAddNote}
-        centered
-        size="lg"
-        tt="capitalize"
-        title="Add An Observation"
-      >
-        <AddNoteForm catId={cat?.id} researcherId={cat?.researcherId} />
-      </Modal>
-
       <Grid>
-        <Grid.Col span={4}>{catProfile}</Grid.Col>
-        <Grid.Col span={8}>{traits}</Grid.Col>
-
         <Grid.Col span={12}>
-          <ScrollArea>
-            <Stack align="stretch" justify="flex-start" gap="md" mt="xs">
-              {notes}
-            </Stack>
-          </ScrollArea>
+          <CatInfoCard cat={cat}/>
         </Grid.Col>
 
         <Grid.Col span={12}>
-          <Group justify="flex-end">
-            <Button maw={100} mt="md" onClick={() => openAddNote()}>
-              Add Note
-            </Button>
-          </Group>
+          <Title order={2}>Notes</Title>
+          <ScrollArea>
+            <Flex align="stretch" justify="flex-start" gap="md" mt="xs">
+              {notes}
+            </Flex>
+          </ScrollArea>
         </Grid.Col>
       </Grid>
     </Paper>

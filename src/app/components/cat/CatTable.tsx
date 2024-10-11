@@ -1,5 +1,6 @@
 import { ActionIcon, Avatar, Group, Menu, rem, Table, Text } from "@mantine/core";
-import { IconDots, IconPencil, IconTrash, IconUser } from "@tabler/icons-react";
+import { IconCat, IconDots, IconPencil, IconTrash, IconUser, IconZoom } from "@tabler/icons-react";
+import Link from "next/link";
 import { ICat } from "~/types";
 
 interface Props {
@@ -9,7 +10,7 @@ interface Props {
   deleteRecord: (record: ICat) => void;
 }
 
-const iconStyle = { width: rem(16), height: rem(16) }
+const iconStyle = { width: rem(20), height: rem(20) }
 
 function CatTable({ data, editRecord, assignResearcher, deleteRecord}: Props) {
 
@@ -18,7 +19,7 @@ function CatTable({ data, editRecord, assignResearcher, deleteRecord}: Props) {
       <Table.Tr key={cat.id}>
         <Table.Td className="capitalize">
           <Group gap="sm">
-            <Avatar size={40} radius={40}><IconUser/></Avatar>
+            <Avatar size={40} radius={40}><IconCat/></Avatar>
             <div>
               <Text fz="sm" fw={500} className="capitalize">
                 {cat.name}
@@ -30,9 +31,14 @@ function CatTable({ data, editRecord, assignResearcher, deleteRecord}: Props) {
         <Table.Td className="capitalize">{cat.color}</Table.Td>
         <Table.Td className="capitalize">{cat.sex ? "Male" : "Female"}</Table.Td>
 
+        <Table.Td>
           <ActionIcon variant="subtle" color="gray" onClick={() => editRecord(cat)}>
             <IconPencil  style={iconStyle} stroke={1.5} />
           </ActionIcon>
+          <ActionIcon variant="subtle" color="gray" component={Link} href={`/cats/${cat.id}`}>
+            <IconZoom  style={iconStyle} stroke={1.5} />
+          </ActionIcon>
+
           <Menu
             transitionProps={{ transition: 'pop' }}
             withArrow
@@ -57,6 +63,8 @@ function CatTable({ data, editRecord, assignResearcher, deleteRecord}: Props) {
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
+        </Table.Td>
+        
       </Table.Tr>
     );
   });

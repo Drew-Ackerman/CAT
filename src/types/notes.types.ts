@@ -4,4 +4,6 @@ export interface INotes {
   timestamp: string;
   catId: number;
   researcherId: number;
+  temperament: number,
+  radioactivity: number,
 }

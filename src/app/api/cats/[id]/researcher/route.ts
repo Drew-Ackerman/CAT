@@ -1,7 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db } from "~/server/db";
 import { cats } from "~/server/db/schema";
-import { ICat } from "~/types";
 
 export async function PATCH(request: Request, { params }: { params: { id: number } }){
     const { id } = params;
