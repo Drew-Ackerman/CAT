@@ -1,7 +1,7 @@
 import { ActionIcon, Card, Divider, Group, Modal, Stack, Text, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconMoodAngry, IconMoodAnnoyed, IconMoodSmile, IconMoodSmileBeam, IconRadioactive } from "@tabler/icons-react";
-import { INotes } from "~/types";
+import type { INotes } from "~/types";
 
 function NoteCard({ data }: { data: INotes }) {
   const [opened, { open, close }] = useDisclosure(false);

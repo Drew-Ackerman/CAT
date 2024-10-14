@@ -1,5 +1,5 @@
 import { Avatar, Group, Text } from "@mantine/core";
-import { ICat } from "~/types";
+import type { ICat } from "~/types";
 
 function CatInfoCard({ cat }: { cat: ICat }) {
   return (

@@ -6,17 +6,26 @@ import { useParams } from "next/navigation";
 import CatInfoCard from "~/app/components/cat/CatInfoCard";
 import AddNoteCard from "~/app/components/notes/AddNoteCard";
 import NoteCard from "~/app/components/notes/NoteCard";
-import { ICat, INotes } from "~/types";
+import type { ICat, INotes } from "~/types";
+
+interface Data extends ICat {
+  notes: INotes[],
+}
 
 export default function CatPage() {
   const { id } = useParams();
 
   //Pull all items and list them
-  const { isPending, data: cat } = useQuery({
+  const { data: cat } = useQuery({
     queryKey: ["cat"],
     queryFn: async () => {
+
+      if(!id || Array.isArray(id)){
+        return;
+      }
+
       const response = await fetch(`/api/cats/${id}`, { method: "GET" });
-      return (await response.json()) as ICat & { notes: INotes[] };
+      return (await response.json()) as Data;
     },
   });
 

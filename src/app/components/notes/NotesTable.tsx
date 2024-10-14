@@ -1,6 +1,5 @@
 import { ActionIcon, Anchor, Avatar, Group, Table } from "@mantine/core";
-import { IconCat, IconTrash, IconUser, IconZoom } from "@tabler/icons-react";
-import Link from "next/link";
+import { IconCat, IconTrash, IconUser } from "@tabler/icons-react";
 import type { ICat, INotes, IResearcher } from "~/types";
 
 interface IData extends INotes {

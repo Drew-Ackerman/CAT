@@ -3,7 +3,7 @@
 import { AppShell } from "@mantine/core";
 import Navbar from "./nav/Navbar";
 import { IconCat, IconDashboard, IconNote, IconUserSearch } from "@tabler/icons-react";
-import { LinkProps, LinksGroupProps } from "~/types";
+import type { LinkProps, LinksGroupProps } from "~/types";
 import { useDisclosure } from "@mantine/hooks";
 
 const linkData: (LinkProps | LinksGroupProps)[] = [

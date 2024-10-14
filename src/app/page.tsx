@@ -2,7 +2,7 @@
 
 import { Card, Flex, Grid, Text } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import { ICat, IResearcher } from "~/types";
+import type { ICat, IResearcher } from "~/types";
 
 export default function HomePage() {
   const { isPending: researcherDataIsPending, data: researcherData } = useQuery({

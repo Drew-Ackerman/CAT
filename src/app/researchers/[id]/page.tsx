@@ -6,10 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import NoteCard from "~/app/components/notes/NoteCard";
 import UserInfo from "~/app/components/researchers/UserInfo";
-import { ICat, INotes, IUser } from "~/types";
+import type { ICat, INotes, IUser } from "~/types";
 
-type Response = IUser & {
-  notes: Array<INotes & { cat: ICat }>;
+type User = IUser & {
+  notes: (INotes & { cat: ICat })[];
   cats: ICat[];
 };
 
@@ -17,26 +17,31 @@ export default function ResearcherPage() {
   const { id } = useParams();
 
   //Pull all items and list them
-  const { isPending, data } = useQuery({
+  const { data: user } = useQuery({
     queryKey: ["researcher"],
     queryFn: async () => {
+
+      if(!id || Array.isArray(id)){
+        return;
+      }
+
       const response = await fetch(`/api/users/${id}`, { method: "GET" });
-      const data = (await response.json()) as Response;
+      const data = (await response.json()) as User;
       return data;
     },
   });
 
-  if (!data) {
+  if (!user) {
     return <p>loading</p>;
   }
 
-  const notes = data.notes
+  const notes = user.notes
     .map((note) => {
       return <NoteCard key={note.id} data={note} />;
     })
     .reverse();
 
-  const cats = data?.cats.map((cat) => {
+  const cats = user?.cats.map((cat) => {
     return (
       <Card key={cat.id} shadow="sm" padding="lg" radius="md" withBorder>
         <Card.Section>
@@ -51,9 +56,9 @@ export default function ResearcherPage() {
   });
 
   const userData = {
-    name: data?.name ?? "",
-    email: data?.email ?? "",
-    role: data?.role ?? "user",
+    name: user?.name ?? "",
+    email: user?.email ?? "",
+    role: user?.role ?? "user",
   };
 
   return (

@@ -1,7 +1,7 @@
 import { Button, Group, Radio, TextInput } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { ICat } from "~/types";
+import type { ICat } from "~/types";
 
 const EditCatForm = (props: { selectedCat: ICat }) => {
   const { selectedCat } = props;

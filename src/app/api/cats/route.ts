@@ -2,7 +2,7 @@ import { db } from "~/server/db";
 import { cats } from "~/server/db/schema";
 import type { ICat } from "~/types";
 
-export async function GET(_request: Request) {
+export async function GET() {
   const data = await db.select().from(cats);
   return Response.json(data);
 }

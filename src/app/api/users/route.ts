@@ -2,7 +2,7 @@ import { db } from "~/server/db";
 import { users } from "~/server/db/schema";
 import type { IUser } from "~/types";
 
-export async function GET(_request: Request) {
+export async function GET() {
   const data = await db.select().from(users);
   return Response.json(data);
 }

@@ -2,7 +2,7 @@ import { db } from "~/server/db";
 import { notes } from "~/server/db/schema";
 import type { INotes } from "~/types";
 
-export async function GET(_request: Request) {
+export async function GET() {
   const notes = await db.query.notes.findMany({
     with: {
       cat: true,

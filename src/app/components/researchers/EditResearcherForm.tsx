@@ -1,14 +1,14 @@
 import { Button, TextInput } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { IResearcher } from "~/types";
+import type { IResearcher } from "~/types";
 
 const EditResearcherForm = (props: { data: IResearcher | null }) => {
   const { data } = props;
 
   const form = useForm({
     initialValues: {
-      name: data?.name || "",
+      name: data?.name ?? "",
     },
     validate: {
       name: isNotEmpty("Name is required"),

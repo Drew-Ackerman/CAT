@@ -2,8 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
-import { useState } from "react";
-import { ICat, INotes, IResearcher } from "~/types";
+import type { ICat, INotes, IResearcher } from "~/types";
 import NotesTable from "../components/notes/NotesTable";
 
 interface IData extends INotes {
@@ -12,7 +11,6 @@ interface IData extends INotes {
 }
 
 const NotesPage = () => {
-  const [selectedRecord, _setSelectedRecord] = useState(0);
 
   //Pull all items and list them
   const { isPending, data } = useQuery({

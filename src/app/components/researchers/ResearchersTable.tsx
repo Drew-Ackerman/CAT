@@ -5,7 +5,6 @@ import type { IUser } from "~/types";
 
 interface Props {
   data: IUser[];
-  editRecord: (record: IUser) => void;
   updateRole: (researcher: IUser, role: string | null) => void;
 }
 

@@ -1,7 +1,7 @@
-import { ActionIcon, Avatar, Group, Menu, rem, Table, Text } from "@mantine/core";
+import { ActionIcon, Avatar, Group, Menu, Table, Text } from "@mantine/core";
 import { IconCat, IconDots, IconPencil, IconTrash, IconUser, IconZoom } from "@tabler/icons-react";
 import Link from "next/link";
-import { ICat } from "~/types";
+import type { ICat } from "~/types";
 
 interface Props {
   data: ICat[];

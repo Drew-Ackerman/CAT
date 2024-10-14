@@ -54,20 +54,20 @@ const CatsPage = () => {
     fetch(`/api/cats/${id}`, {
       method: "DELETE",
     })
-      .then(async () => {
-        notifications.show({
-          color: "green",
-          title: "Delete Successful",
-          message: `Threat Removed`,
-        });
-      })
-      .catch(async () => {
-        notifications.show({
-          color: "red",
-          title: "Delete Failed",
-          message: "Threat still active",
-        });
+    .then(async () => {
+      notifications.show({
+        color: "green",
+        title: "Delete Successful",
+        message: `Threat Removed`,
       });
+    })
+    .catch(async () => {
+      notifications.show({
+        color: "red",
+        title: "Delete Failed",
+        message: "Threat still active",
+      });
+    });
   };
 
   if (isPending) {
