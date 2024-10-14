@@ -3,7 +3,7 @@ import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { ICat } from "~/types";
 
-const EditCatForm = (props: { selectedCat: ICat}) => {
+const EditCatForm = (props: { selectedCat: ICat }) => {
   const { selectedCat } = props;
 
   const form = useForm({

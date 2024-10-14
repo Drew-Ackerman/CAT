@@ -24,18 +24,16 @@ export default function CatPage() {
     return <p>loading</p>;
   }
 
-  const notes = Array.of(<AddNoteCard catId={cat.id} researcherId={cat?.researcherId}/>);
+  const notes = Array.of(<AddNoteCard catId={cat.id} researcherId={cat?.researcherId} />);
   cat?.notes?.forEach((note) => {
-    notes.push(
-        <NoteCard key={note.id} data={note}/>
-    );
+    notes.push(<NoteCard key={note.id} data={note} />);
   });
 
   return (
     <Paper h={"95dvh"} p="lg" radius="md">
       <Grid>
         <Grid.Col span={12}>
-          <CatInfoCard cat={cat}/>
+          <CatInfoCard cat={cat} />
         </Grid.Col>
 
         <Grid.Col span={12}>

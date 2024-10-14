@@ -9,14 +9,13 @@ export async function GET(_request: Request) {
       researcher: true,
     },
   });
-
-  // const data = await db.select().from(notes);
   return Response.json(notes);
 }
 
 export async function POST(request: Request) {
   const { text, catId, researcherId, temperament, radioactivity } = (await request.json()) as INotes;
-  const [insertedItem] = await db.insert(notes)
+  const [insertedItem] = await db
+    .insert(notes)
     .values({ text, temperament, radioactivity, catId, researcherId })
     .returning();
   return Response.json(insertedItem);

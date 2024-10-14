@@ -15,7 +15,9 @@ function ResearchersTable({ data, updateRole }: Props) {
       <Table.Tr key={user.id} className={""}>
         <Table.Td>
           <Group gap="sm">
-            <Avatar size={40} radius={40}><IconUser/></Avatar>
+            <Avatar size={40} radius={40}>
+              <IconUser />
+            </Avatar>
             <div>
               <Text fz="sm" fw={500} className="capitalize">
                 {user.name}
@@ -27,7 +29,7 @@ function ResearchersTable({ data, updateRole }: Props) {
           </Group>
         </Table.Td>
         <Table.Td>
-          <Select 
+          <Select
             data={["admin", "user"]}
             defaultValue={user.role}
             variant="unstyled"
@@ -38,7 +40,7 @@ function ResearchersTable({ data, updateRole }: Props) {
 
         <Table.Td>
           <ActionIcon variant="subtle" color="gray" component={Link} href={`/researchers/${user.id}`}>
-            <IconZoom  style={ { width: rem(20), height: rem(20) }} stroke={1.5} />
+            <IconZoom style={{ width: rem(20), height: rem(20) }} stroke={1.5} />
           </ActionIcon>
         </Table.Td>
       </Table.Tr>

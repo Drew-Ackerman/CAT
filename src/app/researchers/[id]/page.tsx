@@ -1,23 +1,12 @@
 "use client";
 
-import {
-  Card,
-  Flex,
-  Grid,
-  Group,
-  Image,
-  Paper,
-  ScrollArea,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Card, Flex, Grid, Group, Image, Paper, ScrollArea, Text, Title } from "@mantine/core";
 import { IconMars, IconVenus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import NoteCard from "~/app/components/notes/NoteCard";
 import UserInfo from "~/app/components/researchers/UserInfo";
 import { ICat, INotes, IUser } from "~/types";
-
 
 type Response = IUser & {
   notes: Array<INotes & { cat: ICat }>;
@@ -41,9 +30,11 @@ export default function ResearcherPage() {
     return <p>loading</p>;
   }
 
-  const notes = data.notes.map((note) => {
-    return <NoteCard key={note.id} data={note}/>
-  }).reverse();
+  const notes = data.notes
+    .map((note) => {
+      return <NoteCard key={note.id} data={note} />;
+    })
+    .reverse();
 
   const cats = data?.cats.map((cat) => {
     return (
@@ -62,15 +53,14 @@ export default function ResearcherPage() {
   const userData = {
     name: data?.name ?? "",
     email: data?.email ?? "",
-    role: data?.role ?? "user"
-  }
+    role: data?.role ?? "user",
+  };
 
   return (
     <Paper h={"95dvh"} p="lg" radius="md">
-
-      <Grid >
+      <Grid>
         <Grid.Col span={12}>
-          <UserInfo user={userData}/>
+          <UserInfo user={userData} />
         </Grid.Col>
 
         <Grid.Col span={12}>

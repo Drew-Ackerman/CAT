@@ -11,9 +11,7 @@ import { type AdapterAccount } from "next-auth/adapters";
 export const createTable = sqliteTableCreator((name) => `stg-cypress-project_${name}`);
 
 export const users = createTable("user", {
-  id: int("id")
-    .notNull()
-    .primaryKey({ autoIncrement: true }),
+  id: int("id").notNull().primaryKey({ autoIncrement: true }),
   name: text("name", { length: 255 }),
   email: text("email", { length: 255 }).notNull(),
   emailVerified: int("email_verified", {
@@ -28,7 +26,6 @@ export const usersRelations = relations(users, ({ many }) => ({
   cats: many(cats),
   notes: many(notes),
 }));
-
 
 export const accounts = createTable(
   "account",

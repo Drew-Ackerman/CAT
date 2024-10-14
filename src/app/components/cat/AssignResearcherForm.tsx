@@ -4,12 +4,11 @@ import { notifications } from "@mantine/notifications";
 import { ICat, IUser } from "~/types";
 
 const AssignResearcherForm = (props: { selectedCat: ICat; researchers: IUser[] }) => {
-    
-    const { selectedCat, researchers } = props;
-    
+  const { selectedCat, researchers } = props;
+
   const form = useForm({
     initialValues: {
-        researcherId: null,
+      researcherId: null,
     },
   });
 

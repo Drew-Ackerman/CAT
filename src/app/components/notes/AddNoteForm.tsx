@@ -8,7 +8,7 @@ const AddNoteForm = ({ catId, researcherId }: { catId: number; researcherId: num
     initialValues: {
       text: "",
       temperament: 0,
-      radioactivity: 0, 
+      radioactivity: 0,
       catId: catId,
       researcherId: researcherId,
     },
@@ -53,20 +53,15 @@ const AddNoteForm = ({ catId, researcherId }: { catId: number; researcherId: num
 
       <Text>Subjects Radioactivity</Text>
       <Rating
-        emptySymbol={<IconRadioactive/>}
-        fullSymbol={<IconRadioactive color="lime"/>}
+        emptySymbol={<IconRadioactive />}
+        fullSymbol={<IconRadioactive color="lime" />}
         key={form.key("radioactivity")}
         {...form.getInputProps("radioactivity")}
         pb={"md"}
       />
 
       <Text>Subjects Temperament</Text>
-      <Slider
-        key={form.key("temperament")}
-        {...form.getInputProps("temperament")}
-        max={10}
-        pb={"md"}
-      />
+      <Slider key={form.key("temperament")} {...form.getInputProps("temperament")} max={10} pb={"md"} />
 
       <Button mt="md" type="submit">
         Save

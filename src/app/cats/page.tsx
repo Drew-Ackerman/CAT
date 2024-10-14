@@ -14,7 +14,8 @@ import AssignResearcherForm from "../components/cat/AssignResearcherForm";
 const CatsPage = () => {
   const [openedAddModal, { open: openAddModal, close: closeAddModal }] = useDisclosure(false);
   const [openedEditModal, { open: openEditModal, close: closeEditModal }] = useDisclosure(false);
-  const [openedAssignResearcherModal, { open: openAssignResearcherModal, close: closeAssignResearcherModal }] = useDisclosure(false);
+  const [openedAssignResearcherModal, { open: openAssignResearcherModal, close: closeAssignResearcherModal }] =
+    useDisclosure(false);
   const [selectedRecord, setSelectedRecord] = useState<ICat>({} as ICat);
 
   //Pull all items and list them
@@ -49,7 +50,7 @@ const CatsPage = () => {
   };
 
   const deleteRecord = (record: ICat) => {
-    const {id} = record;
+    const { id } = record;
     fetch(`/api/cats/${id}`, {
       method: "DELETE",
     })
@@ -75,26 +76,12 @@ const CatsPage = () => {
 
   return (
     <>
-      <Modal
-        opened={openedAddModal}
-        onClose={closeAddModal}
-        centered
-        size="lg"
-        tt="capitalize"
-        title="Add Cat"
-      >
+      <Modal opened={openedAddModal} onClose={closeAddModal} centered size="lg" tt="capitalize" title="Add Cat">
         <AddCatForm />
       </Modal>
 
-      <Modal
-        opened={openedEditModal}
-        onClose={closeEditModal}
-        centered
-        size="lg"
-        tt="capitalize"
-        title="Edit Cat"
-      >
-        <EditCatForm selectedCat={selectedRecord}/>
+      <Modal opened={openedEditModal} onClose={closeEditModal} centered size="lg" tt="capitalize" title="Edit Cat">
+        <EditCatForm selectedCat={selectedRecord} />
       </Modal>
 
       <Modal
@@ -105,14 +92,19 @@ const CatsPage = () => {
         tt="capitalize"
         title="Assign Researcher"
       >
-        <AssignResearcherForm selectedCat={selectedRecord} researchers={researchers ?? []}/>
+        <AssignResearcherForm selectedCat={selectedRecord} researchers={researchers ?? []} />
       </Modal>
 
       <Group justify="flex-end">
         <Button onClick={() => createRecord()}>Add</Button>
       </Group>
 
-      <CatTable data={data ?? []} editRecord={editRecord} assignResearcher={assignResearcher} deleteRecord={deleteRecord}/>
+      <CatTable
+        data={data ?? []}
+        editRecord={editRecord}
+        assignResearcher={assignResearcher}
+        deleteRecord={deleteRecord}
+      />
     </>
   );
 };

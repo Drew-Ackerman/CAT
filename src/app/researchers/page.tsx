@@ -24,54 +24,52 @@ const ResearchersPage = () => {
     },
   });
 
-  const editRecord = () => {
-
-  }
+  const editRecord = () => {};
 
   const updateRole = (record: IUser, role: string | null) => {
-    if(!role){
+    if (!role) {
       return;
     }
 
     fetch(`api/users/${record.id}/role`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(role),
     })
-    .then(async () => {
-      notifications.show({
-        color: "green",
-        title: "Role Updated",
-        message: `Role updated`,
+      .then(async () => {
+        notifications.show({
+          color: "green",
+          title: "Role Updated",
+          message: `Role updated`,
+        });
+      })
+      .catch(async () => {
+        notifications.show({
+          color: "red",
+          title: "Role Unchanged",
+          message: "Users role remains unchanged.",
+        });
       });
-    })
-    .catch(async () => {
-      notifications.show({
-        color: "red",
-        title: "Role Unchanged",
-        message: "Users role remains unchanged.",
-      });
-    });
-  }
+  };
 
   const deleteSelectedRecord = () => {
     fetch(`api/users/${selectedRecord?.id}`, {
       method: "DELETE",
     })
-    .then(async () => {
-      notifications.show({
-        color: "green",
-        title: "Delete Successful",
-        message: `Threat Removed`,
+      .then(async () => {
+        notifications.show({
+          color: "green",
+          title: "Delete Successful",
+          message: `Threat Removed`,
+        });
+      })
+      .catch(async () => {
+        notifications.show({
+          color: "red",
+          title: "Delete Failed",
+          message: "Threat still active",
+        });
       });
-    })
-    .catch(async () => {
-      notifications.show({
-        color: "red",
-        title: "Delete Failed",
-        message: "Threat still active",
-      });
-    });
   };
 
   if (isPending) {
@@ -80,14 +78,7 @@ const ResearchersPage = () => {
 
   return (
     <>
-      <Modal
-        opened={openedAddModal}
-        onClose={closeAddModal}
-        centered
-        size="lg"
-        tt="capitalize"
-        title="Add Researcher"
-      >
+      <Modal opened={openedAddModal} onClose={closeAddModal} centered size="lg" tt="capitalize" title="Add Researcher">
         <AddResearchForm />
       </Modal>
 

@@ -23,20 +23,20 @@ const AddResearchForm = () => {
       },
       body: JSON.stringify(values),
     })
-    .then(async () => {
-      notifications.show({
-        color: "green",
-        title: "Save Successful",
-        message: `Researcher Added`,
+      .then(async () => {
+        notifications.show({
+          color: "green",
+          title: "Save Successful",
+          message: `Researcher Added`,
+        });
+      })
+      .catch(async () => {
+        notifications.show({
+          color: "red",
+          title: "Save Failed",
+          message: "Could not add a new researcher",
+        });
       });
-    })
-    .catch(async () => {
-      notifications.show({
-        color: "red",
-        title: "Save Failed",
-        message: "Could not add a new researcher",
-      });
-    });
   };
 
   return (
@@ -59,7 +59,7 @@ const AddResearchForm = () => {
         pb="md"
       />
 
-      <Select 
+      <Select
         label="Researchers role"
         withAsterisk
         data={["admin", "user"]}

@@ -9,8 +9,6 @@ export async function GET(_request: Request) {
 
 export async function POST(request: Request) {
   const { name, email, role } = (await request.json()) as IUser;
-  const [insertedItem] = await db.insert(users)
-    .values({ name, email, role })
-    .returning();
+  const [insertedItem] = await db.insert(users).values({ name, email, role }).returning();
   return Response.json(insertedItem);
 }
