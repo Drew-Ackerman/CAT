@@ -3,17 +3,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { Button, Group, Modal } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
-import type { IResearcher, IUser } from "~/types";
+import type { IUser } from "~/types";
 import AddResearchForm from "../components/researchers/AddResearchForm";
-import EditResearcherForm from "../components/researchers/EditResearcherForm";
 import ResearchersTable from "../components/researchers/ResearchersTable";
 
 const ResearchersPage = () => {
   const [openedAddModal, { open: openCreateModal, close: closeAddModal }] = useDisclosure(false);
-  const [openedEditModal, { open: openEditModal, close: closeEditModal }] = useDisclosure(false);
-  const [selectedRecord, setSelectedRecord] = useState<IResearcher>({} as IResearcher);
 
   //Pull all items and list them
   const { isPending, data } = useQuery({
@@ -50,8 +46,8 @@ const ResearchersPage = () => {
       });
   };
 
-  const deleteSelectedRecord = () => {
-    fetch(`api/users/${selectedRecord?.id}`, {
+  const deleteRecord = (userId: number) => {
+    fetch(`api/users/${userId}`, {
       method: "DELETE",
     })
       .then(async () => {
@@ -80,22 +76,11 @@ const ResearchersPage = () => {
         <AddResearchForm />
       </Modal>
 
-      <Modal
-        opened={openedEditModal}
-        onClose={closeEditModal}
-        centered
-        size="lg"
-        tt="capitalize"
-        title="Edit Researcher"
-      >
-        <EditResearcherForm data={selectedRecord} />
-      </Modal>
-
       <Group justify="flex-end">
         <Button onClick={() => openCreateModal()}>Create</Button>
       </Group>
 
-      <ResearchersTable data={data ?? []} updateRole={updateRole} />
+      <ResearchersTable data={data ?? []} updateRole={updateRole} deleteRecord={deleteRecord} />
     </>
   );
 };

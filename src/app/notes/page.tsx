@@ -2,12 +2,12 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
-import type { ICat, INotes, IResearcher } from "~/types";
+import type { ICat, INotes, IUser } from "~/types";
 import NotesTable from "../components/notes/NotesTable";
 
 interface IData extends INotes {
   cat: ICat;
-  researcher: IResearcher;
+  researcher: IUser;
 }
 
 const NotesPage = () => {

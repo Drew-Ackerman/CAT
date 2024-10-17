@@ -2,17 +2,18 @@
 
 import { useState } from "react";
 import { Group, Code } from "@mantine/core";
-import { IconLogout } from "@tabler/icons-react";
+import { IconLogin, IconLogout } from "@tabler/icons-react";
 import classes from "./Navbar.module.css";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { LinksGroup } from "./NavbarLinksGroup";
 import type { LinkProps, LinksGroupProps } from "~/types";
 
 const Navbar = (props: { linkData: (LinksGroupProps | LinkProps)[] }) => {
   const [active, setActive] = useState("Dashboard");
   const { linkData } = props;
-
+  const session = useSession();
+  
   const links = linkData.map((item) => {
     if (isLinkGroup(item)) {
       return <LinksGroup {...item} key={item.label} />;
@@ -33,6 +34,34 @@ const Navbar = (props: { linkData: (LinksGroupProps | LinkProps)[] }) => {
     );
   });
 
+  const loginLink = (
+    <Link
+      href="/api/auth/signin"
+      className={classes.link}
+      onClick={async (event) => {
+        event.preventDefault();
+        await signIn();
+      }}
+    >
+      <IconLogin className={classes.linkIcon} stroke={1.5} />
+      <span>Login</span>
+    </Link>
+  )
+
+  const logoutLink = ( 
+    <Link
+      href="/api/auth/logout"
+      className={classes.link}
+      onClick={async (event) => {
+        event.preventDefault();
+        await signOut();
+      }}
+    >
+      <IconLogout className={classes.linkIcon} stroke={1.5} />
+      <span>Logout</span>
+    </Link>
+  );
+
   return (
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
@@ -44,30 +73,16 @@ const Navbar = (props: { linkData: (LinksGroupProps | LinkProps)[] }) => {
         </Group>
         {links}
       </div>
-      {createNavFooter()}
+
+      <div className={classes.footer}>
+        {session.status !== "authenticated" && loginLink}
+        {session.status === "authenticated" && logoutLink}
+      </div>
     </nav>
   );
 };
 
 export default Navbar;
-
-function createNavFooter() {
-  return (
-    <div className={classes.footer}>
-      <Link
-        href="/api/auth/logout"
-        className={classes.link}
-        onClick={async (event) => {
-          event.preventDefault();
-          await signOut();
-        }}
-      >
-        <IconLogout className={classes.linkIcon} stroke={1.5} />
-        <span>Logout</span>
-      </Link>
-    </div>
-  );
-}
 
 function isLinkGroup(input: LinkProps | LinksGroupProps): input is LinksGroupProps {
   return "childLinks" in input;

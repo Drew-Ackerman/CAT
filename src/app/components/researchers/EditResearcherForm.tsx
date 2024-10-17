@@ -1,9 +1,9 @@
 import { Button, TextInput } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import type { IResearcher } from "~/types";
+import type { IUser } from "~/types";
 
-const EditResearcherForm = (props: { data: IResearcher | null }) => {
+const EditResearcherForm = (props: { data: IUser | null }) => {
   const { data } = props;
 
   const form = useForm({
@@ -16,7 +16,7 @@ const EditResearcherForm = (props: { data: IResearcher | null }) => {
   });
 
   const handleSubmit = (values: typeof form.values) => {
-    fetch(`/api/researchers/${data?.id}`, {
+    fetch(`/api/users/${data?.id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

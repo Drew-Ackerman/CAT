@@ -5,17 +5,25 @@ import Navbar from "./nav/Navbar";
 import { IconCat, IconDashboard, IconNote, IconUserSearch } from "@tabler/icons-react";
 import type { LinkProps, LinksGroupProps } from "~/types";
 import { useDisclosure } from "@mantine/hooks";
+import { useSession } from "next-auth/react";
 
-const linkData: (LinkProps | LinksGroupProps)[] = [
+const adminLinkData: (LinkProps | LinksGroupProps)[] = [
   { link: "/", label: "Dashboard", icon: IconDashboard },
   { link: "/cats", label: "Cats", icon: IconCat },
   { link: "/notes", label: "Notes", icon: IconNote },
   { link: "/researchers", label: "Researchers", icon: IconUserSearch },
 ];
 
+const userLinkData: (LinkProps | LinksGroupProps)[] = [
+  { link: "/", label: "Dashboard", icon: IconDashboard },
+];
+
 const Body = (props: { children: React.ReactNode }) => {
   const [opened] = useDisclosure();
+  const session = useSession();
   const { children } = props;
+
+  const linkData = session.data?.user.role === "admin" ? adminLinkData : userLinkData;
 
   return (
     <AppShell

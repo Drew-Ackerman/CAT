@@ -8,6 +8,8 @@ import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { ReactQueryClientProvider } from "./providers/reactQueryClientProvider";
 import Body from "./components/Body";
+import AuthProvider from "./providers/authProvider";
+import { getSession } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "CAT",
@@ -15,7 +17,9 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const session = await getSession();
+
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <head>
@@ -25,7 +29,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ReactQueryClientProvider>
           <MantineProvider defaultColorScheme="dark">
             <Notifications />
-            <Body>{children}</Body>
+            <AuthProvider session={session}>
+              <Body>
+                {children}
+              </Body>
+            </AuthProvider>
           </MantineProvider>
         </ReactQueryClientProvider>
       </body>

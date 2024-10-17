@@ -1,23 +1,23 @@
-// import { eq } from "drizzle-orm";
-// import { db } from "~/server/db";
-// import { researchers } from "~/server/db/schema";
+import { eq } from "drizzle-orm";
+import { db } from "~/server/db";
+import { users } from "~/server/db/schema";
 
-// /** api/researchers/[id] */
+/** api/researchers/[id] */
 
-// // export async function GET(_request: Request, { params }: { params: { id: number } }) {
-// //   const data = await db.query.researchers.findFirst({
-// //     where: eq(researchers.id, params.id),
-// //     with: {
-// //       notes: {
-// //         with: {
-// //           cat: true,
-// //         },
-// //       },
-// //       cats: true,
-// //     },
-// //   });
-// //   return Response.json(data);
-// // }
+export async function GET(_request: Request, { params }: { params: { id: number } }) {
+  const data = await db.query.users.findFirst({
+    where: eq(users.id, params.id),
+    with: {
+      notes: {
+        with: {
+          cat: true,
+        },
+      },
+      cats: true,
+    },
+  });
+  return Response.json(data);
+}
 
 // export async function DELETE(_request: Request, { params }: { params: { id: number } }) {
 //   const [deletedRecord] = await db.delete(researchers).where(eq(researchers.id, params.id)).returning();

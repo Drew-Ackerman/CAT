@@ -1,14 +1,15 @@
 import { ActionIcon, Avatar, Group, rem, Select, Table, Text } from "@mantine/core";
-import { IconUser, IconZoom } from "@tabler/icons-react";
+import { IconTrash, IconUser, IconZoom } from "@tabler/icons-react";
 import Link from "next/link";
 import type { IUser } from "~/types";
 
 interface Props {
   data: IUser[];
-  updateRole: (researcher: IUser, role: string | null) => void;
+  updateRole: (user: IUser, role: string | null) => void;
+  deleteRecord: (userId: number) => void;
 }
 
-function ResearchersTable({ data, updateRole }: Props) {
+function ResearchersTable({ data, updateRole, deleteRecord }: Props) {
   const rows = data?.map((user: IUser) => {
     return (
       <Table.Tr key={user.id} className={""}>
@@ -40,6 +41,9 @@ function ResearchersTable({ data, updateRole }: Props) {
         <Table.Td>
           <ActionIcon variant="subtle" color="gray" component={Link} href={`/researchers/${user.id}`}>
             <IconZoom style={{ width: rem(20), height: rem(20) }} stroke={1.5} />
+          </ActionIcon>
+          <ActionIcon variant="subtle" color="red" onClick={() => deleteRecord(user.id)}>
+            <IconTrash stroke={1.5} />
           </ActionIcon>
         </Table.Td>
       </Table.Tr>

@@ -51,6 +51,7 @@ const AddCatForm = () => {
         key={form.key("name")}
         {...form.getInputProps("name")}
         pb="md"
+        id="nameTextInput"
       />
       <TextInput
         label="Subjects tag"
@@ -59,6 +60,7 @@ const AddCatForm = () => {
         key={form.key("tag")}
         {...form.getInputProps("tag")}
         pb="md"
+        id="tagTextInput"
       />
       <TextInput
         label="Subjects color"
@@ -67,6 +69,7 @@ const AddCatForm = () => {
         key={form.key("color")}
         {...form.getInputProps("color")}
         pb="md"
+        id="colorTextInput"
       />
       <Radio.Group
         name="sex"

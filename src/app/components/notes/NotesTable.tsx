@@ -1,10 +1,10 @@
 import { ActionIcon, Anchor, Avatar, Group, Table } from "@mantine/core";
 import { IconCat, IconTrash, IconUser } from "@tabler/icons-react";
-import type { ICat, INotes, IResearcher } from "~/types";
+import type { ICat, INotes, IUser } from "~/types";
 
 interface IData extends INotes {
   cat: ICat;
-  researcher: IResearcher;
+  researcher: IUser;
 }
 
 interface Props {

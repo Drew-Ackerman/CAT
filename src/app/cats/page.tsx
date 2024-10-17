@@ -11,6 +11,9 @@ import EditCatForm from "../components/cat/EditCatForm";
 import { useState } from "react";
 import AssignResearcherForm from "../components/cat/AssignResearcherForm";
 
+/**
+ * A table of cat records. 
+ */
 const CatsPage = () => {
   const [openedAddModal, { open: openAddModal, close: closeAddModal }] = useDisclosure(false);
   const [openedEditModal, { open: openEditModal, close: closeEditModal }] = useDisclosure(false);
@@ -76,7 +79,7 @@ const CatsPage = () => {
 
   return (
     <>
-      <Modal opened={openedAddModal} onClose={closeAddModal} centered size="lg" tt="capitalize" title="Add Cat">
+      <Modal id="addCatModal" opened={openedAddModal} onClose={closeAddModal} centered size="lg" tt="capitalize" title="Add Cat">
         <AddCatForm />
       </Modal>
 
