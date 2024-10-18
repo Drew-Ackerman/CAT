@@ -9,6 +9,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const { name, tag, color, sex } = (await request.json()) as ICat;
-  const [insertedItem] = await db.insert(cats).values({ name, tag, color, sex }).returning();
+  const [insertedItem] = await db.insert(cats)
+    .values({ name, tag, color, sex })
+    .returning();
   return Response.json(insertedItem);
 }

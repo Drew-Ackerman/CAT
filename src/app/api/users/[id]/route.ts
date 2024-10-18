@@ -19,6 +19,10 @@ export async function GET(_request: Request, { params }: { params: { id: number 
   return Response.json(data);
 }
 
+/**
+ * Update a specific user
+ * @returns the updated record
+ */
 export async function PATCH(request: Request, { params }: { params: { id: number } }) {
   const { id } = params;
   const updatedValues = (await request.json()) as { name: string };

@@ -1,7 +1,7 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { Button, Group, Modal } from "@mantine/core";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Button, Group, LoadingOverlay, Modal } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useDisclosure } from "@mantine/hooks";
 import type { ICat, IUser } from "~/types";
@@ -31,7 +31,7 @@ const CatsPage = () => {
   });
 
   const { data: researchers } = useQuery({
-    queryKey: ["researchers"],
+    queryKey: ["allUsers"],
     queryFn: async () => {
       const response = await fetch("/api/users");
       return (await response.json()) as IUser[];
@@ -73,12 +73,13 @@ const CatsPage = () => {
     });
   };
 
-  if (isPending) {
-    return <span>Loading...</span>;
-  }
-
   return (
     <>
+      <LoadingOverlay visible={isPending} zIndex={1000} 
+        loaderProps={{ color: "lime", type: "dots", size:"lg" }}
+        overlayProps={{ center: true, backgroundOpacity: 0}}
+      />
+
       <Modal id="addCatModal" opened={openedAddModal} onClose={closeAddModal} centered size="lg" tt="capitalize" title="Add Cat">
         <AddCatForm />
       </Modal>

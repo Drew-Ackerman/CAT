@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Grid, Paper, ScrollArea, Title } from "@mantine/core";
+import { Flex, Grid, LoadingOverlay, Paper, ScrollArea, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import CatInfoCard from "~/app/components/cat/CatInfoCard";
@@ -16,25 +16,24 @@ export default function CatPage() {
   const { id } = useParams();
 
   //Pull all items and list them
-  const { data: cat } = useQuery({
-    queryKey: ["cat"],
+  const { isPending, data: cat } = useQuery({
+    queryKey: [`cat${id}`],
     queryFn: async () => {
-
-      if(!id || Array.isArray(id)){
-        return;
-      }
-
       const response = await fetch(`/api/cats/${id}`, { method: "GET" });
       return (await response.json()) as Data;
     },
+    enabled: id != undefined || !Array.isArray(id)
   });
 
-  if (!cat) {
-    return <p>loading</p>;
+  if(isPending || !cat){
+    return <LoadingOverlay visible={true} zIndex={1000} 
+      loaderProps={{ color: "lime", type: "dots", size:"lg" }}
+      overlayProps={{ center: true, backgroundOpacity: 0}}
+    />
   }
 
-  const notes = Array.of(<AddNoteCard catId={cat.id} researcherId={cat?.researcherId} />);
-  cat?.notes?.forEach((note) => {
+  const notes = Array.of(<AddNoteCard catId={cat.id} researcherId={cat.researcherId} />);
+  cat.notes.forEach((note) => {
     notes.push(<NoteCard key={note.id} data={note} />);
   });
 

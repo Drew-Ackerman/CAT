@@ -62,7 +62,7 @@ export const cats = createTable("cat", {
   name: text("name").notNull(),
   tag: text("tag", { length: 15 }).notNull().unique(),
   color: text("color", { length: 15 }),
-  sex: integer("sex", { mode: "boolean" }),
+  sex: integer("sex").$type<boolean>(),
   researcherId: int("researcherId").references(() => users.id),
 });
 

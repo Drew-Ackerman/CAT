@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import type { ICat, INotes, IUser } from "~/types";
 import NotesTable from "../components/notes/NotesTable";
+import { LoadingOverlay } from "@mantine/core";
 
 interface IData extends INotes {
   cat: ICat;
@@ -14,7 +15,7 @@ const NotesPage = () => {
 
   //Pull all items and list them
   const { isPending, data } = useQuery({
-    queryKey: ["notes"],
+    queryKey: ["allNotes"],
     queryFn: async () => {
       const response = await fetch("/api/notes");
       return (await response.json()) as IData[];
@@ -41,11 +42,16 @@ const NotesPage = () => {
       });
   };
 
-  if (isPending) {
-    return <span>Loading...</span>;
-  }
-
-  return <NotesTable data={data ?? []} deleteRecord={deleteRecord} />;
+  return (
+    <>
+      <LoadingOverlay visible={isPending} zIndex={1000} 
+        loaderProps={{ color: "lime", type: "dots", size:"lg" }}
+        overlayProps={{ center: true, backgroundOpacity: 0}}
+      />
+      
+      <NotesTable data={data ?? []} deleteRecord={deleteRecord} />
+    </>
+  )
 };
 
 export default NotesPage;

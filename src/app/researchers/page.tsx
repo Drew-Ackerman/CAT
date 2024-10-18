@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Button, Group, Modal } from "@mantine/core";
+import { Button, Group, LoadingOverlay, Modal } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useDisclosure } from "@mantine/hooks";
 import type { IUser } from "~/types";
@@ -13,7 +13,7 @@ const ResearchersPage = () => {
 
   //Pull all items and list them
   const { isPending, data } = useQuery({
-    queryKey: ["researchers"],
+    queryKey: ["allUsers"],
     queryFn: async () => {
       const response = await fetch("/api/users");
       return (await response.json()) as IUser[];
@@ -22,7 +22,11 @@ const ResearchersPage = () => {
 
   const updateRole = (record: IUser, role: string | null) => {
     if (!role) {
-      return;
+      notifications.show({
+        color: "red",
+        title: "Role Unchanged",
+        message: "Invalid Role Selected",
+      });
     }
 
     fetch(`api/users/${record.id}/role`, {
@@ -66,12 +70,13 @@ const ResearchersPage = () => {
       });
   };
 
-  if (isPending) {
-    return <span>Loading...</span>;
-  }
-
   return (
     <>
+      <LoadingOverlay visible={isPending} zIndex={1000} 
+        loaderProps={{ color: "lime", type: "dots", size:"lg" }}
+        overlayProps={{ center: true, backgroundOpacity: 0}}
+      />
+
       <Modal opened={openedAddModal} onClose={closeAddModal} centered size="lg" tt="capitalize" title="Add Researcher">
         <AddResearchForm />
       </Modal>

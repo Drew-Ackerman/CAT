@@ -21,3 +21,11 @@ export async function PATCH(request: Request, { params }: { params: { id: number
   const [updatedRecord] = await db.update(cats).set(updatedValues).where(eq(cats.id, id)).returning();
   return Response.json(updatedRecord);
 }
+
+export async function DELETE(_request: Request, { params }: { params: { id: number } }) {
+  const { id } = params;
+  const [deletedRecord] = await db.delete(cats)
+    .where(eq(cats.id, id))
+    .returning()
+  return Response.json(deletedRecord);
+}

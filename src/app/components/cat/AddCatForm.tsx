@@ -1,8 +1,12 @@
 import { Button, Group, Radio, TextInput } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ICat } from "~/types";
 
 const AddCatForm = () => {
+  const queryClient = useQueryClient();
+
   const form = useForm({
     initialValues: {
       name: "",
@@ -18,32 +22,38 @@ const AddCatForm = () => {
     },
   });
 
-  const handleSubmit = (values: typeof form.values) => {
-    fetch("/api/cats", {
+  const addCat = async (values: typeof form.values) => {
+    const resposne = await fetch("/api/cats", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(values),
     })
-      .then(async () => {
-        notifications.show({
-          color: "green",
-          title: "Save Successful",
-          message: `Saved A New Entry`,
-        });
-      })
-      .catch(async () => {
-        notifications.show({
-          color: "red",
-          title: "Save Failed",
-          message: "Could not save the manual entry",
-        });
+    return await resposne.json() as ICat;
+  }
+
+  const mutation = useMutation({
+    mutationFn: addCat,
+    onSuccess: async (addedCat: ICat) => {
+      await queryClient.invalidateQueries({ queryKey: ['cats']});
+      notifications.show({
+        color: "green",
+        title: "Save Successful",
+        message: `Saved A New Entry`,
       });
-  };
+    },
+    onError: () => {
+      notifications.show({
+        color: "red",
+        title: "Save Failed",
+        message: "Could not save the manual entry",
+      });
+    }
+  })
 
   return (
-    <form onSubmit={form.onSubmit(handleSubmit, (errors) => console.log(errors))}>
+    <form onSubmit={form.onSubmit((values) => mutation.mutate(values), (errors) => console.log(errors))}>
       <TextInput
         label="Subjects name"
         placeholder="Imminent Destruction"

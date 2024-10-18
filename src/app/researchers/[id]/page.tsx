@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Flex, Grid, Group, Image, Paper, ScrollArea, Text, Title } from "@mantine/core";
+import { Card, Flex, Grid, Group, Image, LoadingOverlay, Paper, ScrollArea, Text, Title } from "@mantine/core";
 import { IconMars, IconVenus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
@@ -18,7 +18,7 @@ export default function ResearcherPage() {
 
   //Pull all items and list them
   const { data: user } = useQuery({
-    queryKey: ["researcher"],
+    queryKey: [`researcher${id}`],
     queryFn: async () => {
 
       if(!id || Array.isArray(id)){
@@ -31,13 +31,9 @@ export default function ResearcherPage() {
     },
   });
 
-  if (!user) {
-    return <p>loading</p>;
-  }
-
-  const notes = user.notes
+  const notes = user?.notes
     .map((note) => {
-      return <NoteCard key={note.id} data={note} />;
+      return <NoteCard key={note.id} data={note}/>;
     })
     .reverse();
 
@@ -63,6 +59,11 @@ export default function ResearcherPage() {
 
   return (
     <Paper h={"95dvh"} p="lg" radius="md">
+      <LoadingOverlay visible={!user} zIndex={1000} 
+        loaderProps={{ color: "lime", type: "dots", size:"lg" }}
+        overlayProps={{ center: true, backgroundOpacity: 0}}
+      />
+
       <Grid>
         <Grid.Col span={12}>
           <UserInfo user={userData} />

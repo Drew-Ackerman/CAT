@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Flex, Grid, Text } from "@mantine/core";
+import { Card, Flex, Grid, LoadingOverlay, Text } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import type { ICat, INotes, IUser } from "~/types";
@@ -10,15 +10,13 @@ export default function HomePage() {
   const session = useSession();
 
   const { isPending, data } = useQuery({
-    queryKey: ["researchers"],
+    queryKey: [`user ${session.data?.user.id}`],
     queryFn: async () => {
-      const response = await fetch(`/api/users/${session.data.user.id}`);
+      const response = await fetch(`/api/users/${session.data?.user.id}`);
       return (await response.json()) as IUser[] & { notes: INotes[], cats: ICat[]}
     },
     enabled: session.status == "authenticated",
   });
-
-  console.log("data", data);
 
   const notes = data?.notes?.map((note) => {
     return (
@@ -36,20 +34,24 @@ export default function HomePage() {
     );
   });
 
-
-  if(isPending){
-    return <p>Loading...</p>
-  }
-
   return (
-    <Grid>
-      <Grid.Col span={12}>
-        <Flex>{cats}</Flex>
-      </Grid.Col>
+    <>
+      <LoadingOverlay visible={isPending} zIndex={1000} 
+        loaderProps={{ color: "lime", type: "dots", size:"lg" }}
+        overlayProps={{ center: true, backgroundOpacity: 0}}
+      />
+    
+      <Grid>
+        <Grid.Col span={12}>
+          <Flex>{cats}</Flex>
+        </Grid.Col>
 
-      <Grid.Col span={12}>
-        <Flex>{notes}</Flex>
-      </Grid.Col>
-    </Grid>
+        <Grid.Col span={12}>
+          <Flex>{notes}</Flex>
+        </Grid.Col>
+      </Grid>
+    </>
+
+
   );
 }
