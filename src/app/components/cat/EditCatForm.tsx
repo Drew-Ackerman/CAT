@@ -1,10 +1,12 @@
 import { Button, Group, Radio, TextInput } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ICat } from "~/types";
 
 const EditCatForm = (props: { selectedCat: ICat }) => {
   const { selectedCat } = props;
+  const queryClient = useQueryClient();
 
   const form = useForm({
     initialValues: {
@@ -21,32 +23,40 @@ const EditCatForm = (props: { selectedCat: ICat }) => {
     },
   });
 
-  const handleSubmit = (values: typeof form.values) => {
-    fetch(`/api/cats/${selectedCat.id}`, {
+  const patchCat = async (values: typeof form.values) => {
+    const response = await fetch(`/api/cats/${selectedCat.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(values),
     })
-      .then(async () => {
-        notifications.show({
-          color: "green",
-          title: "Edit Successful",
-          message: `Edit cat ${selectedCat.tag}`,
-        });
-      })
-      .catch(async () => {
-        notifications.show({
-          color: "red",
-          title: "Save Failed",
-          message: "Could not edit",
-        });
+    return await response.json() as ICat;
+  }
+
+  const editMutation = useMutation({
+    mutationFn: patchCat,
+    onSuccess: async (editedCat: ICat) => {
+      await queryClient.setQueryData(["cats"], (prevCats: ICat[]) =>{
+        return prevCats.map(cat => cat.id === editedCat.id ? editedCat : cat);
       });
-  };
+      notifications.show({
+        color: "green",
+        title: "Edit Successful",
+        message: `Edit cat ${selectedCat.tag}`,
+      });
+    },
+    onError: () => {
+      notifications.show({
+        color: "red",
+        title: "Save Failed",
+        message: "Could not edit",
+      });
+    }
+  })
 
   return (
-    <form onSubmit={form.onSubmit(handleSubmit, (errors) => console.log(errors))}>
+    <form onSubmit={form.onSubmit((values) => editMutation.mutate(values), (errors) => console.log(errors))}>
       <TextInput
         label="Subjects name"
         placeholder="Imminent Destruction"
