@@ -2,7 +2,7 @@ import { Button, Group, Radio, TextInput } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ICat } from "~/types";
+import type { ICat } from "~/types";
 
 const AddCatForm = () => {
   const queryClient = useQueryClient();

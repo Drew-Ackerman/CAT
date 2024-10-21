@@ -7,10 +7,16 @@ import { useDisclosure } from "@mantine/hooks";
 import type { IUser } from "~/types";
 import AddResearchForm from "../components/researchers/AddResearchForm";
 import ResearchersTable from "../components/researchers/ResearchersTable";
+import { useSession } from "next-auth/react";
+import Unauthorized from "../components/errors/Unauthorized";
 
+/**
+ * A table of all created users
+ */
 const ResearchersPage = () => {
   const [openedAddModal, { open: openCreateModal, close: closeAddModal }] = useDisclosure(false);
-
+  const session = useSession();
+  
   //Pull all items and list them
   const { isPending, data } = useQuery({
     queryKey: ["allUsers"],
@@ -18,7 +24,12 @@ const ResearchersPage = () => {
       const response = await fetch("/api/users");
       return (await response.json()) as IUser[];
     },
+    enabled: session.status == "authenticated" && session.data.user.role == "admin",
   });
+
+  if(session.status == "unauthenticated" || session.data?.user.role != "admin"){
+    return <Unauthorized />
+  }
 
   const updateRole = (record: IUser, role: string | null) => {
     if (!role) {

@@ -3,7 +3,9 @@
 import { Card, Flex, Grid, Group, Image, LoadingOverlay, Paper, ScrollArea, Text, Title } from "@mantine/core";
 import { IconMars, IconVenus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
+import Unauthorized from "~/app/components/errors/Unauthorized";
 import NoteCard from "~/app/components/notes/NoteCard";
 import UserInfo from "~/app/components/researchers/UserInfo";
 import type { ICat, INotes, IUser } from "~/types";
@@ -14,22 +16,24 @@ type User = IUser & {
 };
 
 export default function ResearcherPage() {
-  const { id } = useParams();
+  const session = useSession();
+  const userId = session.data?.user.id;
+  const { id: urlId } = useParams();
 
   //Pull all items and list them
   const { data: user } = useQuery({
-    queryKey: [`researcher${id}`],
+    queryKey: ['researcher', userId],
     queryFn: async () => {
-
-      if(!id || Array.isArray(id)){
-        return;
-      }
-
-      const response = await fetch(`/api/users/${id}`, { method: "GET" });
+      const response = await fetch(`/api/users/${userId}`, { method: "GET" });
       const data = (await response.json()) as User;
       return data;
     },
+    enabled: userId != undefined || Array.isArray(userId),
   });
+
+  if( urlId != userId){
+    return <Unauthorized />
+  }
 
   const notes = user?.notes
     .map((note) => {

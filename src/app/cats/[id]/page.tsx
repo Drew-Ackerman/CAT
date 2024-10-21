@@ -2,8 +2,10 @@
 
 import { Flex, Grid, LoadingOverlay, Paper, ScrollArea, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import CatInfoCard from "~/app/components/cat/CatInfoCard";
+import Unauthorized from "~/app/components/errors/Unauthorized";
 import AddNoteCard from "~/app/components/notes/AddNoteCard";
 import NoteCard from "~/app/components/notes/NoteCard";
 import type { ICat, INotes } from "~/types";
@@ -13,17 +15,31 @@ interface Data extends ICat {
 }
 
 export default function CatPage() {
-  const { id } = useParams();
+  const { id: catId } = useParams();
+  const session = useSession();
+
+  const { data: assignedCats} = useQuery({
+    queryKey: [`user`, session.data?.user.id, `cats`],
+    queryFn: async () => {
+      const response = await fetch(`/api/users/${session.data?.user.id}/cats`, { method: "GET" });
+      return (await response.json()) as Array<number>;
+    },
+    enabled: session.data?.user.id !== undefined,
+  })
 
   //Pull all items and list them
   const { isPending, data: cat } = useQuery({
-    queryKey: [`cat${id}`],
+    queryKey: [`cat`, catId],
     queryFn: async () => {
-      const response = await fetch(`/api/cats/${id}`, { method: "GET" });
+      const response = await fetch(`/api/cats/${catId}`, { method: "GET" });
       return (await response.json()) as Data;
     },
-    enabled: id != undefined || !Array.isArray(id)
+    enabled: catId !== undefined && !Array.isArray(catId) && assignedCats !== undefined && assignedCats?.includes(Number.parseInt(catId)),
   });
+
+  if(catId == undefined || Array.isArray(catId) || (assignedCats !== undefined && !assignedCats?.includes(Number.parseInt(catId))) ){
+    return <Unauthorized/>
+  }
 
   if(isPending || !cat){
     return <LoadingOverlay visible={true} zIndex={1000} 
@@ -32,7 +48,7 @@ export default function CatPage() {
     />
   }
 
-  const notes = Array.of(<AddNoteCard catId={cat.id} researcherId={cat.researcherId} />);
+  const notes = Array.of(<AddNoteCard key={0} catId={cat.id} researcherId={cat.researcherId} />);
   cat.notes.forEach((note) => {
     notes.push(<NoteCard key={note.id} data={note} />);
   });

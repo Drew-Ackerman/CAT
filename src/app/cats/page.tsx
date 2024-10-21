@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Button, Group, LoadingOverlay, Modal } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useDisclosure } from "@mantine/hooks";
@@ -10,6 +10,8 @@ import AddCatForm from "../components/cat/AddCatForm";
 import EditCatForm from "../components/cat/EditCatForm";
 import { useState } from "react";
 import AssignResearcherForm from "../components/cat/AssignResearcherForm";
+import Unauthorized from "../components/errors/Unauthorized";
+import { useSession } from "next-auth/react";
 
 /**
  * A table of cat records. 
@@ -20,6 +22,7 @@ const CatsPage = () => {
   const [openedAssignResearcherModal, { open: openAssignResearcherModal, close: closeAssignResearcherModal }] =
     useDisclosure(false);
   const [selectedRecord, setSelectedRecord] = useState<ICat>({} as ICat);
+  const session = useSession();
 
   //Pull all items and list them
   const { isPending, data } = useQuery({
@@ -28,7 +31,12 @@ const CatsPage = () => {
       const response = await fetch("/api/cats");
       return (await response.json()) as ICat[];
     },
+    enabled: session.status == "authenticated" && session.data.user.role == "admin",
   });
+
+  if(session.status == "unauthenticated" || session.data?.user.role != "admin"){
+    return <Unauthorized />
+  }
 
   const { data: researchers } = useQuery({
     queryKey: ["allUsers"],

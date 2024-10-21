@@ -5,6 +5,8 @@ import { notifications } from "@mantine/notifications";
 import type { ICat, INotes, IUser } from "~/types";
 import NotesTable from "../components/notes/NotesTable";
 import { LoadingOverlay } from "@mantine/core";
+import { useSession } from "next-auth/react";
+import Unauthorized from "../components/errors/Unauthorized";
 
 interface IData extends INotes {
   cat: ICat;
@@ -13,6 +15,8 @@ interface IData extends INotes {
 
 const NotesPage = () => {
 
+  const session = useSession();
+
   //Pull all items and list them
   const { isPending, data } = useQuery({
     queryKey: ["allNotes"],
@@ -20,7 +24,12 @@ const NotesPage = () => {
       const response = await fetch("/api/notes");
       return (await response.json()) as IData[];
     },
+    enabled: session.status == "authenticated" && session.data.user.role == "admin",
   });
+
+  if(session.status == "unauthenticated" || session.data?.user.role != "admin"){
+    return <Unauthorized />
+  }
 
   const deleteRecord = (id: number) => {
     fetch(`/api/notes/${id}`, {
