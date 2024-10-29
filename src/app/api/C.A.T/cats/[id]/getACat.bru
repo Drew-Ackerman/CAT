@@ -1,0 +1,15 @@
+meta {
+  name: getACat
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/cats/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 
+}

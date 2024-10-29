@@ -1,0 +1,20 @@
+meta {
+  name: addCat
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}/api/cats
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Cat",
+    "tag": "TAG-0001",
+    "color": "Black",
+    "sex": 1
+  }
+}

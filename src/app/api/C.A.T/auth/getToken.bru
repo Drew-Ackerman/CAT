@@ -1,0 +1,32 @@
+meta {
+  name: getToken
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/auth/callback/credentials?
+  body: formUrlEncoded
+  auth: none
+}
+
+body:form-urlencoded {
+  username: darth.vader@galacticempire.gov
+  password: password
+  csrfToken: {{csrf}}
+  json: true
+}
+
+script:post-response {
+  let sessionToken = res.getHeader("set-cookie");
+  let splits = sessionToken[0].split(";");
+  let authToken = splits[0];
+  bru.setEnvVar("authToken", authToken);
+  
+}
+
+docs {
+  Get the auth token for a specific user. 
+  
+  Requires the `getCsrfToken` to be run first. 
+}

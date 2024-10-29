@@ -1,0 +1,15 @@
+meta {
+  name: updateACat
+  type: http
+  seq: 2
+}
+
+patch {
+  url: {{baseUrl}}/api/cats/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 
+}

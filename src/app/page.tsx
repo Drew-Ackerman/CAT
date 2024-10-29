@@ -20,7 +20,7 @@ export default function HomePage() {
   const userId = session.data?.user.id;
 
   const { data: user } = useQuery({
-    queryKey: [`user ${session.data?.user.id}`],
+    queryKey: ['user', userId],
     queryFn: async () => {
       const response = await fetch(`/api/users/${session.data?.user.id}`);
       return (await response.json()) as User;

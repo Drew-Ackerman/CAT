@@ -1,0 +1,19 @@
+meta {
+  name: updateUserRole
+  type: http
+  seq: 1
+}
+
+patch {
+  url: {{baseUrl}}/api/users/:id/role
+  body: json
+  auth: none
+}
+
+params:path {
+  id: 0
+}
+
+body:json {
+  "admin"
+}

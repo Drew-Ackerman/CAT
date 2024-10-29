@@ -5,3 +5,8 @@ export interface IUser {
   image: string;
   role: "admin" | "user";
 }
+
+export enum Roles {
+  Admin = "admin",
+  User = "user"
+}

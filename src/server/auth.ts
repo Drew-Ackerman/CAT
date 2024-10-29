@@ -28,6 +28,18 @@ declare module "next-auth" {
   }
 }
 
+declare module "next-auth/jwt" {
+  interface JWT {
+    role: "admin" | "user",
+  }
+}
+
+// declare module "@auth/drizzle-adapter" {
+//   interface DefaultSQLiteUsersTable {
+//     id: number,
+//   }
+// }
+
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
  *
@@ -36,7 +48,6 @@ declare module "next-auth" {
 export const authOptions: NextAuthOptions = {
   callbacks: {
     session: ({ session, token }) => {
-      console.log("se", session, token);
       return {
         ...session,
         user: {
@@ -46,8 +57,7 @@ export const authOptions: NextAuthOptions = {
         },
       }
     },
-    async jwt({ token, account, profile, user}) {
-      console.log("es", token, account, profile, user);
+    async jwt({ token, user}) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
@@ -59,10 +69,6 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   secret: env.NEXTAUTH_SECRET,
-  adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-  }) as Adapter,
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. 'Sign in with...')
@@ -76,7 +82,6 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, _req) {
-        console.log("here");
         if (!credentials) {
           return null;
         }
@@ -84,7 +89,6 @@ export const authOptions: NextAuthOptions = {
         const user = await db.query.users.findFirst({
           where: eq(users.email, username),
         });
-        console.log("user?", user);
         // If no error and we have user data, return it
         if (user) {
           return user;

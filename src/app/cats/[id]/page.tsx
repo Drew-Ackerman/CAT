@@ -34,10 +34,10 @@ export default function CatPage() {
       const response = await fetch(`/api/cats/${catId}`, { method: "GET" });
       return (await response.json()) as Data;
     },
-    enabled: catId !== undefined && !Array.isArray(catId) && assignedCats !== undefined && assignedCats?.includes(Number.parseInt(catId)),
+    enabled: catId !== undefined && !Array.isArray(catId) && assignedCats?.includes(Number.parseInt(catId)),
   });
 
-  if(catId == undefined || Array.isArray(catId) || (assignedCats !== undefined && !assignedCats?.includes(Number.parseInt(catId))) ){
+  if(catId == undefined || Array.isArray(catId) || assignedCats !== undefined && !assignedCats?.includes(Number.parseInt(catId)) ){
     return <Unauthorized/>
   }
 

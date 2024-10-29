@@ -34,17 +34,18 @@ const CatsPage = () => {
     enabled: session.status == "authenticated" && session.data.user.role == "admin",
   });
 
-  if(session.status == "unauthenticated" || session.data?.user.role != "admin"){
-    return <Unauthorized />
-  }
-
   const { data: researchers } = useQuery({
     queryKey: ["allUsers"],
     queryFn: async () => {
       const response = await fetch("/api/users");
       return (await response.json()) as IUser[];
     },
+    enabled: session.status == "authenticated" && session.data.user.role == "admin",
   });
+  
+  if(session.status == "unauthenticated" || session.data?.user.role != "admin"){
+    return <Unauthorized />
+  }
 
   const createRecord = () => {
     openAddModal();

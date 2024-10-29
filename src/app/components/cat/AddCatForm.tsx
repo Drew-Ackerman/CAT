@@ -35,7 +35,7 @@ const AddCatForm = () => {
 
   const mutation = useMutation({
     mutationFn: addCat,
-    onSuccess: async (addedCat: ICat) => {
+    onSuccess: async (_addedCat: ICat) => {
       await queryClient.invalidateQueries({ queryKey: ['cats']});
       notifications.show({
         color: "green",

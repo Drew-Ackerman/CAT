@@ -1,0 +1,21 @@
+meta {
+  name: updateACatsResearcher
+  type: http
+  seq: 1
+}
+
+patch {
+  url: {{baseUrl}}/api/cats/:id/researcher
+  body: json
+  auth: none
+}
+
+params:path {
+  id: 0
+}
+
+body:json {
+  {
+    researcherId: 1
+  }
+}
