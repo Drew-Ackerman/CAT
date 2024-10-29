@@ -31,6 +31,9 @@ export default function CatPage() {
   const { isPending, data: cat } = useQuery({
     queryKey: [`cat`, catId],
     queryFn: async () => {
+      if(catId == undefined || Array.isArray(catId)){
+        return null;
+      }
       const response = await fetch(`/api/cats/${catId}`, { method: "GET" });
       return (await response.json()) as Data;
     },

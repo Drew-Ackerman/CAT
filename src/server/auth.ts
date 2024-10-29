@@ -1,12 +1,10 @@
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
 import { getServerSession, type DefaultSession, type NextAuthOptions } from "next-auth";
-import { type Adapter } from "next-auth/adapters";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { env } from "~/env";
 
 import { db } from "~/server/db";
-import { accounts, users } from "~/server/db/schema";
+import { users } from "~/server/db/schema";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -24,13 +22,13 @@ declare module "next-auth" {
 
   interface User {
     id: number,
-    role: "admin" | "user",
+    role: string, //"admin" | "user",
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
-    role: "admin" | "user",
+    role: string, //"admin" | "user",
   }
 }
 
@@ -81,6 +79,7 @@ export const authOptions: NextAuthOptions = {
         username: { label: "Username", type: "text", placeholder: "email" },
         password: { label: "Password", type: "password" },
       },
+      
       async authorize(credentials, _req) {
         if (!credentials) {
           return null;

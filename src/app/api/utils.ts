@@ -6,12 +6,12 @@ export async function isAdmin(request: NextRequest){
     return isAuthorized(request, Roles.Admin)
 }
 
-export async function isAuthorized(request: NextRequest, role: Roles): Promise<boolean>{
+export async function isAuthorized(request: NextRequest, role: `${Roles}`): Promise<boolean>{
     const token = await getToken({req:request});
-    if(token == undefined){
+    if(!token){
         throw new Error("Cannot get authorization token from request")
     }
-    return token.role === role;
+    return token.role == role;
 }
 
 export async function isNotAuthorized(request: NextRequest, role: Roles){
