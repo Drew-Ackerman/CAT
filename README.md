@@ -21,6 +21,6 @@ Create automated testing to ensure that future development on the C.A.T applicat
 - [Prisma](https://prisma.io)
 - [Drizzle](https://orm.drizzle.team)
 - [Tailwind CSS](https://tailwindcss.com)
-- [MantineUI]
-- [Tabler]
+- [MantineUI](https://mantine.dev)
+- [Tabler](https://tabler.io/icons)
 
