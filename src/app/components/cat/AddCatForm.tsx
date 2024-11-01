@@ -83,18 +83,18 @@ const AddCatForm = () => {
       />
       <Radio.Group
         name="sex"
-        label="The weapon's sex"
+        label="The Subject's sex"
         withAsterisk
         key={form.key("sex")}
         {...form.getInputProps("sex")}
       >
         <Group mt="xs">
-          <Radio value="1" label="Male" />
-          <Radio value="0" label="Female" />
+          <Radio test-id="male" value="1" label="Male" />
+          <Radio test-id="female" value="0" label="Female" />
         </Group>
       </Radio.Group>
 
-      <Button mt="md" type="submit">
+      <Button mt="md" type="submit" id="submitButton">
         Save
       </Button>
     </form>
