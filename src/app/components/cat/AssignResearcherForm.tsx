@@ -20,18 +20,27 @@ const AssignResearcherForm = (props: { selectedCat: ICat; researchers: IUser[] }
       },
       body: JSON.stringify(values),
     })
-      .then(async () => {
-        notifications.show({
-          color: "green",
-          title: "Save Successful",
-          message: `Saved A New Entry`,
-        });
+      .then((response) => {
+        if(response.status == 200){
+          notifications.show({
+            color: "green",
+            title: "Save Successful",
+            message: `Assigned researcher to cat`,
+          });
+        }
+        else {
+          notifications.show({
+            color: "red",
+            title: "Save Failed",
+            message: "Could not assign researcher to cat",
+          });
+        }
       })
       .catch(async () => {
         notifications.show({
           color: "red",
           title: "Save Failed",
-          message: "Could not save the manual entry",
+          message: "Server Issue",
         });
       });
   };
@@ -39,6 +48,7 @@ const AssignResearcherForm = (props: { selectedCat: ICat; researchers: IUser[] }
   return (
     <form onSubmit={form.onSubmit(handleSubmit, (errors) => console.log(errors))}>
       <Select
+        test-id="researcherSelect"
         label="Assign a researcher"
         data={researchers.map((r) => {
           return { value: r.id.toString(), label: r.name };
@@ -47,7 +57,7 @@ const AssignResearcherForm = (props: { selectedCat: ICat; researchers: IUser[] }
         {...form.getInputProps("researcherId")}
       />
 
-      <Button mt="md" type="submit">
+      <Button id="saveButton" mt="md" type="submit">
         Save
       </Button>
     </form>
