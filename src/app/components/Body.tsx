@@ -35,7 +35,7 @@ const Body = (props: { children: React.ReactNode }) => {
       padding="md"
     >
       <AppShell.Navbar p="md">
-        <Navbar linkData={linkData} />
+        <Navbar linkData={linkData} authStatus={session.status}/>
       </AppShell.Navbar>
       <AppShell.Main>{children}</AppShell.Main>
     </AppShell>
