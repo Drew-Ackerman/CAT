@@ -3,7 +3,7 @@ import type { ICat } from "~/types";
 
 function CatInfoCard({ cat }: { cat: ICat }) {
   return (
-    <div>
+    <div test-id="catInfoCard">
       <Group wrap="nowrap">
         <Avatar src="/photos/moons.jpg" size={94} radius="md" />
         <div>
