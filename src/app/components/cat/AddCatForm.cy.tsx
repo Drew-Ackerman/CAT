@@ -12,7 +12,7 @@ describe('<AddCatForm />', () => {
     });
 
     it("Successful submissions have a notification", () => {
-        cy.intercept("/api/cats", { status: 200 })
+        cy.intercept("/api/cats", { statusCode: 200 })
         cy.mount(<AddCatForm/>);
         cy.get("#nameTextInput").type("Mooney");
         cy.get("#tagTextInput").type("TAG-0001");
@@ -24,7 +24,7 @@ describe('<AddCatForm />', () => {
     });
 
     it("Errored submissions have a notification", () => {
-        cy.intercept("/api/cats", { status: 404, body: 'not found!' })
+        cy.intercept("/api/cats", { statusCode: 400 })
         cy.mount(<AddCatForm/>);
         cy.get("#nameTextInput").type("Mooney");
         cy.get("#tagTextInput").type("TAG-0001");
