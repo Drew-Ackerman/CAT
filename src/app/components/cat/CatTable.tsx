@@ -13,8 +13,8 @@ interface Props {
 function CatTable({ data, editRecord, assignResearcher, deleteRecord }: Props) {
   const rows = data?.map((cat: ICat) => {
     return (
-      <Table.Tr key={cat.id}>
-        <Table.Td className="capitalize">
+      <Table.Tr test-id="catRecord" key={cat.id}>
+        <Table.Td test-id="catName" className="capitalize">
           <Group gap="sm">
             <Avatar size={40} radius={40}>
               <IconCat />
@@ -26,29 +26,29 @@ function CatTable({ data, editRecord, assignResearcher, deleteRecord }: Props) {
             </div>
           </Group>
         </Table.Td>
-        <Table.Td className="capitalize">{cat.tag}</Table.Td>
-        <Table.Td className="capitalize">{cat.color}</Table.Td>
-        <Table.Td className="capitalize">{cat.sex ? "Male" : "Female"}</Table.Td>
+        <Table.Td test-id="catTag" className="capitalize">{cat.tag}</Table.Td>
+        <Table.Td test-id="catColor" className="capitalize">{cat.color}</Table.Td>
+        <Table.Td test-id="catSex" className="capitalize">{cat.sex ? "Male" : "Female"}</Table.Td>
 
         <Table.Td>
-          <ActionIcon variant="subtle" color="gray" onClick={() => editRecord(cat)}>
+          <ActionIcon test-id="editRecordIcon" variant="subtle" color="gray" onClick={() => editRecord(cat)}>
             <IconPencil stroke={1.5} />
           </ActionIcon>
-          <ActionIcon variant="subtle" color="gray" component={Link} href={`/cats/${cat.id}`}>
+          <ActionIcon test-id="profileLink" variant="subtle" color="gray" component={Link} href={`/cats/${cat.id}`}>
             <IconZoom stroke={1.5} />
           </ActionIcon>
 
-          <Menu transitionProps={{ transition: "pop" }} withArrow position="bottom-end" withinPortal>
-            <Menu.Target>
+          <Menu test-id="actionMenu" transitionProps={{ transition: "pop" }} withArrow position="bottom-end" withinPortal>
+            <Menu.Target >
               <ActionIcon variant="subtle" color="gray">
                 <IconDots stroke={1.5} />
               </ActionIcon>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item onClick={() => assignResearcher(cat)} leftSection={<IconUser stroke={1.5} />}>
+              <Menu.Item test-id="assignResearcherIcon" onClick={() => assignResearcher(cat)} leftSection={<IconUser stroke={1.5} />}>
                 Assign Researcher
               </Menu.Item>
-              <Menu.Item onClick={() => deleteRecord(cat)} leftSection={<IconTrash />} color="red">
+              <Menu.Item test-id="deleteRecordIcon" onClick={() => deleteRecord(cat)} leftSection={<IconTrash />} color="red">
                 Remove
               </Menu.Item>
             </Menu.Dropdown>
