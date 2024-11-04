@@ -13,7 +13,7 @@ const EditCatForm = (props: { selectedCat: ICat }) => {
       name: selectedCat.name,
       tag: selectedCat.tag,
       color: selectedCat.color,
-      sex: selectedCat.sex,
+      sex: selectedCat.sex ? "1" : "0",
     },
     validate: {
       name: isNotEmpty("Name is required"),
@@ -64,6 +64,7 @@ const EditCatForm = (props: { selectedCat: ICat }) => {
         key={form.key("name")}
         {...form.getInputProps("name")}
         pb="md"
+        id="nameTextInput"
       />
       <TextInput
         label="Subjects tag"
@@ -72,6 +73,7 @@ const EditCatForm = (props: { selectedCat: ICat }) => {
         key={form.key("tag")}
         {...form.getInputProps("tag")}
         pb="md"
+        id="tagTextInput"
       />
       <TextInput
         label="Subjects color"
@@ -80,21 +82,22 @@ const EditCatForm = (props: { selectedCat: ICat }) => {
         key={form.key("color")}
         {...form.getInputProps("color")}
         pb="md"
+        id="colorTextInput"
       />
       <Radio.Group
         name="sex"
-        label="The weapon's sex"
+        label="Subjects sex"
         withAsterisk
         key={form.key("sex")}
         {...form.getInputProps("sex")}
       >
         <Group mt="xs">
-          <Radio value="1" label="Male" />
-          <Radio value="0" label="Female" />
+          <Radio test-id="male" value="1" label="Male" />
+          <Radio test-id="female" value="0" label="Female" />
         </Group>
       </Radio.Group>
 
-      <Button mt="md" type="submit">
+      <Button id="submitButton" mt="md" type="submit">
         Save
       </Button>
     </form>
