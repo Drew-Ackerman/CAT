@@ -12,7 +12,7 @@ describe('<AddCatForm />', () => {
     });
 
     it("Successful submissions have a notification", () => {
-        cy.intercept("/api/cats", { statusCode: 200 })
+        cy.intercept("/api/cats", { statusCode: 200, body: {name: "Mooney", tag: "TAG-0001", color: "White", sex: true} })
         cy.mount(<AddCatForm/>);
         cy.get("#nameTextInput").type("Mooney");
         cy.get("#tagTextInput").type("TAG-0001");
