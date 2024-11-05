@@ -1,5 +1,5 @@
 import { relations, sql } from "drizzle-orm";
-import { index, int, integer, primaryKey, real, sqliteTableCreator, text } from "drizzle-orm/sqlite-core";
+import { check, index, int, integer, primaryKey, real, sqliteTableCreator, text } from "drizzle-orm/sqlite-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
 /**
@@ -11,15 +11,16 @@ import { type AdapterAccount } from "next-auth/adapters";
 export const createTable = sqliteTableCreator((name) => `stg-cypress-project_${name}`);
 
 export const users = createTable("user", {
-  id: int("id").notNull().primaryKey({ autoIncrement: true }),
-  name: text("name", { length: 255 }),
-  email: text("email", { length: 255 }).notNull(),
-  emailVerified: int("email_verified", {
-    mode: "timestamp",
-  }).default(sql`(unixepoch())`),
-  image: text("image", { length: 255 }),
-  role: text("role").notNull(),
-});
+    id: int("id").notNull().primaryKey({ autoIncrement: true }),
+    name: text("name", { length: 255 }).notNull(),
+    email: text("email", { length: 255 }).notNull(),
+    emailVerified: int("email_verified", {
+      mode: "timestamp",
+    }).default(sql`(unixepoch())`),
+    image: text("image", { length: 255 }),
+    role: text("role").notNull(),
+  }
+);
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
@@ -58,11 +59,11 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
 
 
 export const cats = createTable("cat", {
-  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }).notNull(),
   name: text("name").notNull(),
   tag: text("tag", { length: 15 }).notNull().unique(),
-  color: text("color", { length: 15 }),
-  sex: integer("sex").$type<boolean>(),
+  color: text("color", { length: 15 }).notNull(),
+  sex: integer("sex").$type<boolean>().notNull(),
   researcherId: int("researcherId").references(() => users.id),
 });
 
@@ -83,8 +84,8 @@ export const notes = createTable("notes", {
     .default(sql`(unixepoch())`),
   temperament: real("temperament").notNull().default(5.0),
   radioactivity: int("radioactivity").notNull().default(3),
-  catId: int("catId").references(() => cats.id),
-  researcherId: int("researcherId").references(() => users.id),
+  catId: int("catId").references(() => cats.id).notNull(),
+  researcherId: int("researcherId").references(() => users.id).notNull(),
 });
 
 export const notesRelations = relations(notes, ({ one }) => ({

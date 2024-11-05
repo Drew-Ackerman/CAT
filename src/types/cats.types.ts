@@ -4,5 +4,5 @@ export interface ICat {
   tag: string;
   color: string;
   sex: boolean;
-  researcherId: number;
+  researcherId: number | null,
 }

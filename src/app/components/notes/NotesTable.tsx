@@ -1,4 +1,7 @@
+'use client'
+
 import { ActionIcon, Anchor, Avatar, Group, Table } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { IconCat, IconTrash, IconUser } from "@tabler/icons-react";
 import type { ICat, INotes, IUser } from "~/types";
 
@@ -7,12 +10,27 @@ interface IData extends INotes {
   researcher: IUser;
 }
 
-interface Props {
-  data: IData[];
-  deleteRecord: (id: number) => void;
-}
+const deleteRecord = async (id: number) => {
+  fetch(`/api/notes/${id}`, {
+    method: "DELETE",
+  })
+  .then(async () => {
+    notifications.show({
+      color: "green",
+      title: "Delete Successful",
+      message: `Note removed`,
+    });
+  })
+  .catch(async () => {
+    notifications.show({
+      color: "red",
+      title: "Delete Failed",
+      message: "Not not removed",
+    });
+  });
+};
 
-function NotesTable({ data, deleteRecord }: Props) {
+function NotesTable({ data }: { data: Array<IData>}) {
   const rows = data?.map((note: IData) => {
     return (
       <Table.Tr test-id={"noteRow"} key={note.id} className={""}>

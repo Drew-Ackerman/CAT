@@ -2,8 +2,8 @@ export interface IUser {
   id: number;
   name: string;
   email: string;
-  image: string;
-  role: "admin" | "user";
+  image: string | null;
+  role: "admin" | "user" | string,
 }
 
 export enum Roles {

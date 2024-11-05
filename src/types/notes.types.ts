@@ -1,7 +1,7 @@
 export interface INotes {
   id: number;
   text: string;
-  timestamp: string;
+  timestamp: Date;
   catId: number;
   researcherId: number;
   temperament: number;

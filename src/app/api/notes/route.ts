@@ -3,19 +3,13 @@ import { notes } from "~/server/db/schema";
 import type { INotes } from "~/types";
 import { isAdmin } from "../utils";
 import { type NextRequest, NextResponse } from "next/server";
+import { getAllNotes } from "~/app/controllers/noteController";
 
 export async function GET(request: NextRequest) {
   if(!(await isAdmin(request))){
     return NextResponse.json({message: "Forbidden"}, {status: 403});
   }
-
-  const notes = await db.query.notes.findMany({
-    with: {
-      cat: true,
-      researcher: true,
-    },
-  });
-  return Response.json(notes);
+  return getAllNotes();
 }
 
 export async function POST(request: Request) {
