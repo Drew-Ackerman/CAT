@@ -1,16 +1,68 @@
-import { ActionIcon, Avatar, Group, rem, Select, Table, Text } from "@mantine/core";
+"use client"
+
+import { ActionIcon, Avatar, Button, Group, Modal, rem, Select, Table, Text } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 import { IconTrash, IconUser, IconZoom } from "@tabler/icons-react";
 import Link from "next/link";
 import type { IUser } from "~/types";
+import AddResearchForm from "./AddResearchForm";
 
-interface Props {
-  data: IUser[];
-  updateRole: (user: IUser, role: string | null) => void;
-  deleteRecord: (userId: number) => void;
-}
 
-function ResearchersTable({ data, updateRole, deleteRecord }: Props) {
-  const rows = data?.map((user: IUser) => {
+function ResearchersTable({ users }: { users: Array<IUser> }) {
+  const [openedAddModal, { open: openCreateModal, close: closeAddModal }] = useDisclosure(false);
+
+  const updateRole = (record: IUser, role: string | null) => {
+    if (!role) {
+      notifications.show({
+        color: "red",
+        title: "Role Unchanged",
+        message: "Invalid Role Selected",
+      });
+    }
+  
+    fetch(`api/users/${record.id}/role`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(role),
+    })
+      .then(async () => {
+        notifications.show({
+          color: "green",
+          title: "Role Updated",
+          message: `Role updated`,
+        });
+      })
+      .catch(async () => {
+        notifications.show({
+          color: "red",
+          title: "Role Unchanged",
+          message: "Users role remains unchanged.",
+        });
+      });
+  };
+  
+  const deleteRecord = (userId: number) => {
+    fetch(`api/users/${userId}`, {
+      method: "DELETE",
+    })
+      .then(async () => {
+        notifications.show({
+          color: "green",
+          title: "Delete Successful",
+          message: `Threat Removed`,
+        });
+      })
+      .catch(async () => {
+        notifications.show({
+          color: "red",
+          title: "Delete Failed",
+          message: "Threat still active",
+        });
+      });
+  };
+
+  const rows = users?.map((user: IUser) => {
     return (
       <Table.Tr key={user.id} className={""}>
         <Table.Td>
@@ -51,17 +103,27 @@ function ResearchersTable({ data, updateRole, deleteRecord }: Props) {
   });
 
   return (
-    <Table.ScrollContainer minWidth={600}>
-      <Table verticalSpacing="sm">
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Employee</Table.Th>
-            <Table.Th>Role</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
-    </Table.ScrollContainer>
+    <>
+      <Modal opened={openedAddModal} onClose={closeAddModal} centered size="lg" tt="capitalize" title="Add Researcher">
+        <AddResearchForm />
+      </Modal>
+
+      <Group justify="flex-end">
+        <Button onClick={() => openCreateModal()}>Create</Button>
+      </Group>
+
+      <Table.ScrollContainer minWidth={600}>
+        <Table verticalSpacing="sm">
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Employee</Table.Th>
+              <Table.Th>Role</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+      </Table.ScrollContainer>
+    </>
   );
 }
 
