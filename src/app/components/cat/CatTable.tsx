@@ -1,17 +1,64 @@
-import { ActionIcon, Avatar, Group, Menu, Table, Text } from "@mantine/core";
+"use client"
+
+import { ActionIcon, Avatar, Button, Group, Menu, Modal, Table, Text } from "@mantine/core";
 import { IconCat, IconDots, IconPencil, IconTrash, IconUser, IconZoom } from "@tabler/icons-react";
 import Link from "next/link";
-import type { ICat } from "~/types";
+import type { ICat, IUser } from "~/types";
+import AddCatForm from "./AddCatForm";
+import AssignResearcherForm from "./AssignResearcherForm";
+import EditCatForm from "./EditCatForm";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
+import { useState } from "react";
 
 interface Props {
-  data: ICat[];
-  editRecord: (record: ICat) => void;
-  assignResearcher: (record: ICat) => void;
-  deleteRecord: (record: ICat) => void;
+  cats: Array<ICat>;
+  users: Array<IUser>;
 }
 
-function CatTable({ data, editRecord, assignResearcher, deleteRecord }: Props) {
-  const rows = data?.map((cat: ICat) => {
+function CatTable({ cats, users }: Props) {
+  const [openedAddModal, { open: openAddModal, close: closeAddModal }] = useDisclosure(false);
+  const [openedEditModal, { open: openEditModal, close: closeEditModal }] = useDisclosure(false);
+  const [openedAssignResearcherModal, { open: openAssignResearcherModal, close: closeAssignResearcherModal }] =
+    useDisclosure(false);
+  const [selectedRecord, setSelectedRecord] = useState<ICat>({} as ICat);
+  
+  const createRecord = () => {
+    openAddModal();
+  };
+
+  const editRecord = (cat: ICat) => {
+    setSelectedRecord(cat);
+    openEditModal();
+  };
+
+  const assignResearcher = (cat: ICat) => {
+    setSelectedRecord(cat);
+    openAssignResearcherModal();
+  };
+
+  const deleteRecord = (record: ICat) => {
+    const { id } = record;
+    fetch(`/api/cats/${id}`, {
+      method: "DELETE",
+    })
+    .then(async () => {
+      notifications.show({
+        color: "green",
+        title: "Delete Successful",
+        message: `Threat Removed`,
+      });
+    })
+    .catch(async () => {
+      notifications.show({
+        color: "red",
+        title: "Delete Failed",
+        message: "Threat still active",
+      });
+    });
+  };
+
+  const rows = cats?.map((cat: ICat) => {
     return (
       <Table.Tr test-id="catRecord" key={cat.id}>
         <Table.Td test-id="catName" className="capitalize">
@@ -59,20 +106,45 @@ function CatTable({ data, editRecord, assignResearcher, deleteRecord }: Props) {
   });
 
   return (
-    <Table.ScrollContainer minWidth={600}>
-      <Table verticalSpacing="sm">
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Name</Table.Th>
-            <Table.Th>Tag</Table.Th>
-            <Table.Th>Color</Table.Th>
-            <Table.Th>Sex</Table.Th>
-            <Table.Th></Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
-    </Table.ScrollContainer>
+    <>
+      <Modal id="addCatModal" opened={openedAddModal} onClose={closeAddModal} centered size="lg" tt="capitalize" title="Add Cat">
+        <AddCatForm />
+      </Modal>
+
+      <Modal opened={openedEditModal} onClose={closeEditModal} centered size="lg" tt="capitalize" title="Edit Cat">
+        <EditCatForm selectedCat={selectedRecord} />
+      </Modal>
+
+      <Modal
+        opened={openedAssignResearcherModal}
+        onClose={closeAssignResearcherModal}
+        centered
+        size="lg"
+        tt="capitalize"
+        title="Assign Researcher"
+      >
+        <AssignResearcherForm selectedCat={selectedRecord} researchers={users ?? []} />
+      </Modal>
+
+      <Group justify="flex-end">
+        <Button onClick={() => createRecord()}>Add</Button>
+      </Group>
+    
+      <Table.ScrollContainer minWidth={600}>
+        <Table verticalSpacing="sm">
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Name</Table.Th>
+              <Table.Th>Tag</Table.Th>
+              <Table.Th>Color</Table.Th>
+              <Table.Th>Sex</Table.Th>
+              <Table.Th></Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+      </Table.ScrollContainer>
+    </>
   );
 }
 
