@@ -4,7 +4,7 @@ import { Paper, Grid, Title, ScrollArea, Flex, Card, Center, Text } from "@manti
 import CatInfoCard from "./CatInfoCard";
 import AddNoteCard from "../notes/AddNoteCard";
 import NoteCard from "../notes/NoteCard";
-import { ICat, INotes, IUser } from "~/types";
+import type { ICat, INotes, IUser } from "~/types";
 
 interface Data extends ICat {
     notes: Array<INotes> | null,

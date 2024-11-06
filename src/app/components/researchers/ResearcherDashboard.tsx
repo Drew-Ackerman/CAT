@@ -5,7 +5,7 @@ import { IconMars, IconVenus, IconSearch } from "@tabler/icons-react";
 import Link from "next/link";
 import NoteCard from "../notes/NoteCard";
 import UserInfo from "./UserInfo";
-import { IUser, INotes, ICat } from "~/types";
+import type { IUser, INotes, ICat } from "~/types";
 
 type User = IUser & {
     notes: Array<INotes & { cat: ICat }>;

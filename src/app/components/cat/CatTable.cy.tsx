@@ -1,4 +1,4 @@
-import { ICat } from "~/types";
+import type{ ICat } from "~/types";
 import CatTable from "./CatTable";
 
 

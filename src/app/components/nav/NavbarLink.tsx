@@ -1,7 +1,7 @@
 import Link from "next/link";
 import classes from "./Navbar.module.css";
-import { LinkProps } from "~/types";
-import { Dispatch, SetStateAction } from "react";
+import type { LinkProps } from "~/types";
+import type { Dispatch, SetStateAction } from "react";
 
 interface NavbarLinkProps {
     item: LinkProps,

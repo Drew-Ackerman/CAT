@@ -1,5 +1,5 @@
 import { db } from "~/server/db";
-import { ICat, INotes, IUser } from "~/types";
+import type { ICat, INotes, IUser } from "~/types";
 
 interface IData extends INotes {
     cat: ICat,
