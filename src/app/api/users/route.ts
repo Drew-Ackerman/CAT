@@ -1,8 +1,9 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "~/server/db";
 import { users } from "~/server/db/schema";
 import { type IUser } from "~/types";
 import { isAdmin } from "../utils";
+import { getAllUsers } from "~/app/controllers/userController";
 
 /** /api/users */
 
@@ -13,8 +14,7 @@ export async function GET(request: NextRequest) {
   if(!(await isAdmin(request))){
     return NextResponse.json({message: "Forbidden"}, {status: 403});
   }
-  const data = await db.select().from(users);
-  return Response.json(data);
+  return NextResponse.json(getAllUsers());
 }
 
 /**
