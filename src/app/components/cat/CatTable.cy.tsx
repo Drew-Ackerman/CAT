@@ -1,4 +1,4 @@
-import type{ ICat } from "~/types";
+import type{ ICat, IUser } from "~/types";
 import CatTable from "./CatTable";
 
 
@@ -23,11 +23,21 @@ describe("<CatTable />", () => {
         }
     ]
 
+    const users: Array<IUser> = [
+        {
+            id: 0,
+            name: "Drew",
+            email: "admin@cats.com",
+            image: null,
+            role: "admin"
+        }
+    ]
+
     beforeEach(() => {
         const editRecord = cy.stub().as("editRecord");
         const assignResearcher = cy.stub().as("assignResearcher");
         const deleteRecord = cy.stub().as("deleteRecord");
-        cy.mount(<CatTable data={cats} editRecord={editRecord} assignResearcher={assignResearcher} deleteRecord={deleteRecord}/>)
+        cy.mount(<CatTable cats={cats} users={users}/>)
     });
     
     it("Records contain the cat's name, tag, color, and sex.", () => {

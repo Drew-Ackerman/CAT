@@ -18,7 +18,7 @@ export const users = createTable("user", {
       mode: "timestamp",
     }).default(sql`(unixepoch())`),
     image: text("image", { length: 255 }),
-    role: text("role").notNull(),
+    role: text("role").notNull().$type<"admin" | "user">(),
   }
 );
 

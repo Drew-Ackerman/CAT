@@ -11,7 +11,7 @@ describe('<NoteCard />', () => {
       researcherId: 1,
       temperament: 10,
       radioactivity: 10,
-      timestamp: "2024-10-17T17:03:29.000Z",
+      timestamp: new Date(Date.now()),
     }
     cy.mount(<NoteCard data={data}/>)
   })

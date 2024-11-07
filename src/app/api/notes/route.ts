@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   if(!(await isAdmin(request))){
     return NextResponse.json({message: "Forbidden"}, {status: 403});
   }
-  return getAllNotes();
+  return NextResponse.json(getAllNotes());
 }
 
 export async function POST(request: Request) {
