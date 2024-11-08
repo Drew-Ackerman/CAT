@@ -3,6 +3,8 @@ import NoteCard from './NoteCard'
 import type { INotes } from '~/types'
 
 describe('<NoteCard />', () => {
+  const timestamp = new Date(Date.now());
+
   beforeEach(() => {
     const data: INotes = {
       id: 0,
@@ -11,14 +13,14 @@ describe('<NoteCard />', () => {
       researcherId: 1,
       temperament: 10,
       radioactivity: 10,
-      timestamp: new Date(Date.now()),
+      timestamp: timestamp,
     }
     cy.mount(<NoteCard data={data}/>)
   })
 
   it('Clicking the note card opens more details', () => {
     cy.getByTestId("noteCard").click();
-    cy.getByTestId("viewNoteModal").find("header").should("have.text", "10/17/2024, 11:03:29 AM");
+    cy.getByTestId("viewNoteModal").find("header").should("have.text", timestamp.toLocaleString());
     cy.getByTestId("viewNoteModal").find("p").should('have.text', "Very Adorable");
   });
 
