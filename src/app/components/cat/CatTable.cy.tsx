@@ -34,9 +34,8 @@ describe("<CatTable />", () => {
     ]
 
     beforeEach(() => {
-        const editRecord = cy.stub().as("editRecord");
-        const assignResearcher = cy.stub().as("assignResearcher");
-        const deleteRecord = cy.stub().as("deleteRecord");
+        cy.intercept("DELETE", "/api/cats/*", cy.spy().as("deleteRecord"));
+
         cy.mount(<CatTable cats={cats} users={users}/>)
     });
     
@@ -54,7 +53,7 @@ describe("<CatTable />", () => {
         cy.getByTestId("editRecordIcon").each((icon) => {
             icon.trigger("click");
         })
-        cy.get("@editRecord").should("be.called");
+        cy.getByTestId("editCatForm").should("be.visible");
     });
 
     it("Cat Profiles can be viewed", () => {
@@ -69,9 +68,9 @@ describe("<CatTable />", () => {
             menu.trigger("click");
             cy.getByTestId("assignResearcherIcon").each((icon) => {
                 icon.trigger("click");
+                cy.getByTestId("assignResearcherForm").should("be.visible");
             });
         });
-        cy.get("@assignResearcher").should("be.called");
     });
 
     it("Records can be deleted", () => {
@@ -81,6 +80,6 @@ describe("<CatTable />", () => {
                 icon.trigger("click");
             })
         });
-        cy.get("@deleteRecord").should("be.called");
+        cy.get("@deleteRecord").should("be.called")
     });
 })

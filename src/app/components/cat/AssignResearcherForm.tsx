@@ -46,7 +46,7 @@ const AssignResearcherForm = (props: { selectedCat: ICat; researchers: IUser[] }
   };
 
   return (
-    <form onSubmit={form.onSubmit(handleSubmit, (errors) => console.log(errors))}>
+    <form test-id="assignResearcherForm" onSubmit={form.onSubmit(handleSubmit, (errors) => console.log(errors))}>
       <Select
         test-id="researcherSelect"
         label="Assign a researcher"

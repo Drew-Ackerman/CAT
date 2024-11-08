@@ -56,7 +56,7 @@ const EditCatForm = (props: { selectedCat: ICat }) => {
   })
 
   return (
-    <form onSubmit={form.onSubmit((values) => editMutation.mutate(values), (errors) => console.log(errors))}>
+    <form test-id="editCatForm" onSubmit={form.onSubmit((values) => editMutation.mutate(values), (errors) => console.log(errors))}>
       <TextInput
         label="Subjects name"
         placeholder="Imminent Destruction"
